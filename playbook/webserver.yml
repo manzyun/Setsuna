@@ -1,0 +1,12 @@
+- name: Gunicornのインストール
+  apt: name=gunicorn3 state=latest
+
+- name: Pyramidのインストール
+  apt: name=python3-pyramid state=latest
+
+- name: Pyramidアプリの構築
+  command: parster create -t pyramid_starter setsuna
+  command: python ~/setsuna/setup.py setsuna
+
+- name: Gunicorn起動
+  command: gunicorn_paster ~/setsuna/setsuna.ini
