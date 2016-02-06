@@ -20,7 +20,7 @@ Contents:
    :maxdepth: 2
 
    server/structure
-
+   server/ansible
 
 Indices and tables
 ==================
