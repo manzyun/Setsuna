@@ -1,0 +1,5 @@
+- hosts: lxc-mongodb
+  remote_user: root
+  tasks:
+    - name: mongodbのインストール
+      apt: name=mongodb-server
