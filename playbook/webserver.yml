@@ -1,12 +1,14 @@
-- name: Gunicornのインストール
-  apt: name=gunicorn3 state=latest
+- hosts: lxc-webserver
+  remote_user: root
+  tasks:
+  - name: Gunicornのインストール
+    apt: name=gunicorn3 state=latest
 
-- name: Pyramidのインストール
-  apt: name=python3-pyramid state=latest
+  - name: Pyramidのインストール
+    apt: name=python3-pyramid state=latest
 
-- name: Pyramidアプリの構築
-  command: parster create -t pyramid_starter setsuna
-  command: python ~/setsuna/setup.py setsuna
+  - name: ユーザーpyramidを作成・切り替え
+    user: name=pyramid comment="Management pyramid" shell=/bin/dash
 
-- name: Gunicorn起動
-  command: gunicorn_paster ~/setsuna/setsuna.ini
+# TODO: Pyramidアプリの導入
+# TODO: Gunicornの起動
