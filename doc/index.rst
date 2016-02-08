@@ -6,9 +6,11 @@
 Welcome to Setsuna's documentation!
 ===================================
 
-Setsuna（刹那）は投稿がある期間で消える揮発性SNSです。
+ーー承認欲求に流されないSNS
 
-投稿した内容は24時間で消えます。（デフォルト値）
+Setsuna（刹那）は投稿が一定時間で消える揮発性SNSです。
+
+投稿した内容は8時間で消えます。（デフォルト値）
 しかし、投稿の「伝われ」ボタンが押されることによって寿命が伸びます。
 
 できることはそれだけです。
@@ -19,6 +21,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   general
    server/structure
    server/ansible
    server/db
