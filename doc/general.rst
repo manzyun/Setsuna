@@ -71,22 +71,18 @@ APIを考える
           }
          ]
 
-ユーザー登録で使える機能
+投稿周り
 ------------------------
 
-ユーザー登録っつーか、OAuthで外部サイトからアクセスとか。
-
-  - Twitter
-  - Facebook
-  - Instagram
-  - Google
+投稿内容はパスワードで削除可能とする。
 
 - 投稿
   
   - POST
   - post
   - content=""
-  - 例: POST http://setsuna.org/api/1/post?content="焼肉食べたいけどなんたらかんたら"
+  - password=""
+  - 例: POST http://setsuna.org/api/1/post?content="焼肉食べたいけどなんたらかんたら"&password="hogefuga"
 
     - 返答
 
@@ -102,6 +98,7 @@ APIを考える
           {
            "id" : 123456
            "content" : "焼肉食べたいけどなんたらかんたら",
+           "password" : "hogefuga"
            "limit" : "..."
           }
          ]
@@ -112,6 +109,7 @@ APIを考える
   - POST
   - delete
   - id=UnixTime
+  - password=投稿時に指定したパスワード
   - 例：POST http://setsuna.org/api/1/delete?id=123456
 
     - 返答
