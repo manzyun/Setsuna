@@ -7,7 +7,7 @@ import random
 
 
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read('environment.cfg')
 
 class Content(object):
     # DB Connection
