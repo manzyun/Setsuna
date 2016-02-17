@@ -4,17 +4,16 @@
 
 Setsuna is volatile web service.
 
-Python3.5 product. Use Pyramid and Gunicorn.
+Python3.5 product. Use Flask and Gunicorn.
 Develop environment use pyvenv.
 
-* Version: 0.0.1
-
+* Version: 0.0.2
 
 ### How do I get set up? ###
 
 #### Summary of set up ####
 
-Before install Pyramid and Gunicorn.
+Before install Flask and Gunicorn.
 
 After line work in progress.
 
