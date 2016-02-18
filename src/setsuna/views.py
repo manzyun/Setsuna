@@ -1,0 +1,3 @@
+from setsuna import app
+
+
