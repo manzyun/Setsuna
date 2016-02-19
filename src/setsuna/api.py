@@ -1,20 +1,43 @@
+import json
 from setsuna import app
-from flask import json
-from pymongo import MongoClient 
+from flask_restful import response, abort, Api, Resource
 
-@app.route('/api/1/', methods='GET')
-def do_api():
-    db = setsua.DATABASE
-    news = db.posts.find().sort({unique_id: -1}).limit(int(count))
-    posts = []
-    for post in news:
-        posts.add(setsuna.Content(post))
+api = Api(app)
 
-    js = json.dumps(posts)
+def abort_if_post_doesnot_exist(unique_id):
+    if unique_id not in app.DATABASE.find({"unique_id": unique_id},
+                                          {"unique_id": 1, "_id": 0}):
+        abort(404, message="Post {} is nothing. Maybe, This post was delete \
+                            or die.")
 
-    response = Response(js, status=200, minetype='application/json')
-    response = headers['Link'] = 'http://setsuna.org'
+parser = reqperse.RequestParser()
+parser.add_argment("content")
+parser.add_argment("delkey")
+parser.add_argment("unique_id")
 
-    return response
+class Post(Resource):
+    def get(self, unique_id):
+        
+        abort_if_post_doesnot_exist(unique_id)
+        post = app.DATABASE.find({"unique_id:": unique_id})
+        del post["_id"]
+        return json.dumps(post)
 
-@app.route('/api/1/
+    def post(self):
+        args = parser.parse_args()
+        post = app.Content(0)
+        post.content = args["content"]
+        post.delkey = args["delkey"]
+        post.post()
+
+        return post_content, 201
+
+    def delete(self):
+        args = parser.parse_args()
+        abort_if_post_doesnot_exist(args["unique_id"])
+        post = app.Content(args["unique_id"])
+        if post.delete(args["delkey"]):
+            return "Delete {}".format(args["unique_id"]), 204
+        else:
+            return "Unmatched password.", 200
+
