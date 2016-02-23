@@ -1,11 +1,12 @@
+from conf import _conf
 from pymongo import MongoClient
 from flask import Flask, request, session, g, redirect, url_for, abort, \
         render_template, flash
 import scheme
 
 # configuration
-CLIENT = MongoClient('10.0.3.116', 27017)
-DATABASE = CLIENT["setsuna"]["posts"]
+CLIENT = MongoClient(_conf["address"], _conf["ip"])
+DATABASE = CLIENT[_conf["database"]]
 DEBUG = True
 
 # create app
