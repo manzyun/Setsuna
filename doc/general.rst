@@ -23,12 +23,40 @@ APIはAPIでJSONを渡す。
 
   - http://setsuna.org/api/<version>/
 
-- 最新の投稿の表示
+- 最新投稿を複数表示
+
+  - GET
+  - (None)
+  - (None)
+  - 例: GET http://setsuna.org/api/1/
+
+    - 返答
+
+      .. code-block:: json
+
+         [
+          {
+           "developerMessage" : "...",
+           "userMessage" : "...",
+           "errorCode" : 100,
+           "moreInfo" : "http://developers.setsuna.org/errors/100"
+          },
+          {
+           "content" : "...",
+           "limit" : "..."
+          },
+          {
+           "content" : "...",
+           "limit" : "..."
+          }
+         ]
+
+- 投稿の複数表示
 
   - GET
   - news
   - posts=10
-  - 例: GET http://setsuna.org/api/1/news?posts=10
+  - 例: GET http://setsuna.org/api/1/news?start=0&end=20
 
     - 返答
 
@@ -56,7 +84,7 @@ APIはAPIでJSONを渡す。
   - POST
   - tell
   - id=<UnixTime>
-  - 例：POST http://setsuna.org/api/1/tell?id=123456
+  - 例：POST http://setsuna.org/api/1/123456
 
     - 返答
 
@@ -114,7 +142,7 @@ APIはAPIでJSONを渡す。
   - delete
   - id=UnixTime
   - password=投稿時に指定したパスワード
-  - 例：POST http://setsuna.org/api/1/delete?id=123456
+  - 例：DELETE http://setsuna.org/api/1/123456
 
     - 返答
 
