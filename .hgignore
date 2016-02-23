@@ -2,7 +2,11 @@ syntax: glob
 
 *.pyc
 
+playbook/hosts
+src/pyvenv.cfg
+
 src/bin/
 src/include/
 src/lib/
+src/lib64
 doc/_build/
