@@ -25,6 +25,7 @@ Contents:
    server/structure
    server/ansible
    server/db
+   note
 
 Indices and tables
 ==================
