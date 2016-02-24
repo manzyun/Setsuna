@@ -15,12 +15,13 @@ class Post(Object):
         try:
             self.unique_id = unique_id
             if self.unique_id == 0:
-                self.unique_id = app.DATABASE.find_one()
+                self.unique_id = app.DATABASE.find_one(
+                        {}, {unique_id: 1, _id: 0})
                 self.content = ""
                 self.limit = 0.0
                 self.delkey = ""
             else:
-                post = posts.find_one({"unique_id":self.unique_id})
+                post = posts.find_one({"unique_id": self.unique_id})
                 self.content = post.content
                 self.limit = post.limit
                 self.delkey = delkey
