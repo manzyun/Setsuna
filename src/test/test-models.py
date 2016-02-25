@@ -60,5 +60,3 @@ class TestPost(TestCase):
 
         collection.find_one({"unique_id": testdata["unique_id"]})
 
-if __name__ == "__main__":
-    unittest.main()
