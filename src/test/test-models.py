@@ -21,11 +21,12 @@ class TestPost(TestCase):
     db = client[conf._conf["database"]]
     collection = db[conf._conf["collection"]]
 
-    def setup(self):
+    def setUp(self):
         # とりあえず書く
         self.testindex = collection.insert_one(testdata)
+        print("insert ok")
 
-    def teardown(self):
+    def tearDown(self):
         collection.remove({"_id": self.testindex})
 
     def test_make_model(self):
