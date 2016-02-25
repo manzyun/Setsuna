@@ -1,5 +1,4 @@
-from unittest import TestCase
-from nose.tools import eq_, ok_, raises, with_setup
+from unittest import TestCase, expectedFailure
 from setsuna import conf, models
 from PyMongo import MongoClient
 import json
@@ -31,7 +30,7 @@ class TestPost(TestCase):
     def test_make_model(self):
         """ モデルが読み込まれてインスタンスが生成されるか """
         model = models.Post(testdata["unique_id"])
-        eq_(json.dumps(model), testdata)
+        self.assertEqual(json.dumps(model), testdata)
 
     def test_insert_model(self):
         """ 生成したインスタンスが、インスタンスの情報を維持したまま挿入されるか """
@@ -42,10 +41,10 @@ class TestPost(TestCase):
 
         model_sample = models.Post(model.unique_id)
 
-        eq_(model, model_sample)
+        self.assertEqual(model, model_sample)
 
 
-    @raises(NotRecordError)
+    @unittest.expectiedFailture
     def test_delete_model(self):
         """ 狙ったレコードがパスワードが合致した場合に削除されるか """
         model = models.Post(testdata["unique_id"])
@@ -53,7 +52,7 @@ class TestPost(TestCase):
 
         collection.find_one({"unique_id": testdata["unique_id"]})
 
-    @raises(NotRecordError)
+    @unittest.expectiedFailture
     def test_dead_model(self):
         """ リミットオーバーした場合投稿が削除されるか """
         model = models.Post(testdata["unique_id"])
@@ -61,3 +60,5 @@ class TestPost(TestCase):
 
         collection.find_one({"unique_id": testdata["unique_id"]})
 
+if __name__ == "__main__":
+    unittest.main()
