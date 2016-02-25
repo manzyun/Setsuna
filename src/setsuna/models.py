@@ -1,14 +1,15 @@
-import setsuna
+from setsuna import conf
+from pymongo import MongoClient
 import json
 import time
 import datetime
 import random
 
 
-class Post(Object):
+class Post():
     # DB Connection
-    db = setsuna.DATABASE
-    posts = db.posts
+    connect = MongoClient(conf._conf["address"], conf._conf["port"])
+    posts = connect[conf._conf["database"]][conf._conf["collection"]]
 
     def __init__(unique_id=0):
         # Read DB

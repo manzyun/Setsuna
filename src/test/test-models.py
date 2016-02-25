@@ -1,8 +1,8 @@
 from unittest import TestCase, expectedFailure
 from setsuna import conf, models
-from PyMongo import MongoClient
+from pymongo import MongoClient
 import json
-import datatime
+import datetime
 import calendar
 
 class TestPost(TestCase):
@@ -44,7 +44,7 @@ class TestPost(TestCase):
         self.assertEqual(model, model_sample)
 
 
-    @unittest.expectiedFailture
+    @expectedFailure
     def test_delete_model(self):
         """ 狙ったレコードがパスワードが合致した場合に削除されるか """
         model = models.Post(testdata["unique_id"])
@@ -52,7 +52,7 @@ class TestPost(TestCase):
 
         collection.find_one({"unique_id": testdata["unique_id"]})
 
-    @unittest.expectiedFailture
+    @expectedFailure
     def test_dead_model(self):
         """ リミットオーバーした場合投稿が削除されるか """
         model = models.Post(testdata["unique_id"])

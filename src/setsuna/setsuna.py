@@ -5,8 +5,6 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 import scheme
 
 # configuration
-CLIENT = MongoClient(_conf["address"], _conf["ip"])
-DATABASE = CLIENT[_conf["database"]]
 DEBUG = True
 
 # create app
