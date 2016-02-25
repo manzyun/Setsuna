@@ -11,18 +11,18 @@ class Post():
     connect = MongoClient(conf._conf["address"], conf._conf["port"])
     posts = connect[conf._conf["database"]][conf._conf["collection"]]
 
-    def __init__(unique_id=0):
+    def __init__(self, unique_id=0):
         # Read DB
         try:
             self.unique_id = unique_id
             if self.unique_id == 0:
-                self.unique_id = app.DATABASE.find_one(
+                self.unique_id = Post.posts.find_one(
                         {}, {unique_id: 1, _id: 0})
                 self.content = ""
                 self.limit = 0.0
                 self.delkey = ""
             else:
-                post = posts.find_one({"unique_id": self.unique_id})
+                post = Post.posts.find_one({"unique_id": self.unique_id})
                 self.content = post.content
                 self.limit = post.limit
                 self.delkey = delkey

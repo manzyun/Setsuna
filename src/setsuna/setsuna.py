@@ -1,5 +1,3 @@
-from conf import _conf
-from pymongo import MongoClient
 from flask import Flask, request, session, g, redirect, url_for, abort, \
         render_template, flash
 import scheme

@@ -1,5 +1,9 @@
-from unittest import TestCase, expectedFailure
+import sys, os
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
+
 from setsuna import conf, models
+from unittest import TestCase, expectedFailure
 from pymongo import MongoClient
 import json
 import datetime
@@ -19,10 +23,10 @@ class TestPost(TestCase):
 
     def setup(self):
         # とりあえず書く
-        self.testindex = self.collection.insert_one(testdata)
+        self.testindex = collection.insert_one(testdata)
 
     def teardown(self):
-        self.collection.remove({"_id": self.testindex})
+        collection.remove({"_id": self.testindex})
 
     def test_make_model(self):
         """ モデルが読み込まれてインスタンスが生成されるか """

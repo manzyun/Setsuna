@@ -1,6 +1,7 @@
 import pymongo
+import conf
 
-client = pymongo.MongoClient('10.0.3.116', 27017)
+client = pymongo.MongoClient(conf._conf["address"], conf._conf["port"])
 collection = client["setsuna"]["posts"]
 
 def init_db():
