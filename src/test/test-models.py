@@ -10,7 +10,7 @@ import datetime
 import calendar
 
 
-testdata = {"unique_id": 'getNextSequence("user_id")"',
+testdata = {"unique_id": 0,
             "content": "美味しい美味しいスープカレー",
             "limit": calendar.timegm(
                 datetime.datetime.utcnow().timetuple()),
@@ -25,17 +25,15 @@ class TestPost(TestCase):
 
     def setUp(self):
         # とりあえず書く
-        #Post.testdata["unique_id"] = Post.db.collection.getNextSequence("unique_id")
-        self.testindex = TestPost.collection.insert_one(Post.testdata)
-        print("insert ok")
+        self.testindex = TestPost.collection.insert_one(testdata)
 
     def tearDown(self):
-        collection.remove({"_id": self.testindex})
+        TestPost.collection.remove({"unique_id": 0})
 
     def test_make_model(self):
         """ モデルが読み込まれてインスタンスが生成されるか """
         model = models.Post(testdata["unique_id"])
-        self.assertEqual(json.dumps(model), Post.testdata)
+        self.assertEqual(json.dumps(model), testdata)
 
     def test_insert_model(self):
         """ 生成したインスタンスが、インスタンスの情報を維持したまま挿入されるか """
