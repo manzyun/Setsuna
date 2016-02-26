@@ -9,7 +9,8 @@ import json
 import datetime
 import calendar
 
-testdata = {"unique_id": 1,
+
+testdata = {"unique_id": 'getNextSequence("user_id")"',
             "content": "美味しい美味しいスープカレー",
             "limit": calendar.timegm(
                 datetime.datetime.utcnow().timetuple()),
@@ -21,9 +22,11 @@ class TestPost(TestCase):
     db = client[conf._conf["database"]]
     collection = db[conf._conf["collection"]]
 
+
     def setUp(self):
         # とりあえず書く
-        self.testindex = collection.insert_one(testdata)
+        #Post.testdata["unique_id"] = Post.db.collection.getNextSequence("unique_id")
+        self.testindex = TestPost.collection.insert_one(Post.testdata)
         print("insert ok")
 
     def tearDown(self):
@@ -32,7 +35,7 @@ class TestPost(TestCase):
     def test_make_model(self):
         """ モデルが読み込まれてインスタンスが生成されるか """
         model = models.Post(testdata["unique_id"])
-        self.assertEqual(json.dumps(model), testdata)
+        self.assertEqual(json.dumps(model), Post.testdata)
 
     def test_insert_model(self):
         """ 生成したインスタンスが、インスタンスの情報を維持したまま挿入されるか """
