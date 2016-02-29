@@ -11,23 +11,22 @@ class Post():
     connect = MongoClient(conf._conf["address"], conf._conf["port"])
     posts = connect[conf._conf["database"]][conf._conf["collection"]]
 
-    def __init__(self, unique_id=0):
+    def __init__(self):
         # Read DB
-        try:
-            self.unique_id = unique_id
-            if self.unique_id == 0:
-                self.unique_id = Post.posts.find_one(
-                        {}, {unique_id: 1, _id: 0})
-                self.content = ""
-                self.limit = 0.0
-                self.delkey = ""
-            else:
-                post = Post.posts.find_one({"unique_id": self.unique_id})
-                self.content = post.content
-                self.limit = post.limit
-                self.delkey = delkey
-        except Exception as e:
-            return e
+        self.unique_id = None
+        self.content = ""
+        self.limit = 0.0
+        self.delkey = ""
+
+    def read(self, unique_id):
+        # Read DB
+        self.unique_id = unique_id
+        post = Post.posts.find_one({"unique_id": self.unique_id})
+        del post['_id']
+        self.content = post["content"]
+        self.limit = post["limit"]
+        self.delkey = post["delkey"]
+        print(post)
 
     def post(self):
         if self.delkey == "":
@@ -46,7 +45,7 @@ class Post():
         try:
             if self._id == unique_id and self.delkey == delkey:
                 # Remove post in DB
-                collection.remove({"unique_id": self.unique_id})
+                collection.delete_one({"unique_id": self.unique_id})
                 return True
             else:
                 return False
