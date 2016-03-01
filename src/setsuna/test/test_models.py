@@ -1,9 +1,6 @@
-import sys, os
 import unittest
 
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../")
-
-from setsuna import conf, models
+from .. import conf, models
 from unittest import TestCase, expectedFailure
 from pymongo import MongoClient
 import json
@@ -21,7 +18,6 @@ class TestPost(TestCase):
     client = MongoClient(conf._conf["address"], conf._conf["port"])
     db = client[conf._conf["database"]]
     collection = db[conf._conf["collection"]]
-
 
     def setUp(self):
         # とりあえず書く
@@ -49,11 +45,11 @@ class TestPost(TestCase):
         model = models.Post()
         model.content = "にくまん、あんまん、カレーまん"
         model.delkey = "nununeno"
-        model.post()
+        sample_id = model.post()
 
-        model_sample = models.Post(model.unique_id)
+        model_sample = models.Post.read(sample_id)
 
-        self.assertEqual(model, model_sample)
+        self.assertDictEqual(model, model_sample)
 
 
     def test_delete_model(self):

@@ -1,4 +1,4 @@
-from .conf import _conf
+from conf import _conf
 from pymongo import MongoClient
 import json
 import datetime
@@ -34,7 +34,7 @@ class Post():
 
         # Writing DB
         try:
-            result = Post.posts.insert_one({"unique_id": getNextSequence(
+            result = Post.posts.insert_one({"unique_id": get_next_sequence(
                 db.posts, "unique_id"),
                 "content": self.content,
                 "limit": self.limit,
@@ -66,6 +66,10 @@ def make_delkey(length=6):
         delkey = "".join(password)
 
         return delkey
+
+def get_next_sequence(collection, name):
+    return collection.find_and_modify(query = {"_id": name},
+            update = {"$inc": {"seq": 1}}, new = True).get("seq")
 
 if __name__ == "__main__":
     test = Post()
