@@ -1,6 +1,6 @@
 import unittest
 
-from .. import conf, models
+from setsuna import conf, models
 from unittest import TestCase, expectedFailure
 from pymongo import MongoClient
 import json
