@@ -1,15 +1,14 @@
-from setsuna import conf
+from .conf import _conf
 from pymongo import MongoClient
 import json
-import time
 import datetime
 import random
 
 
 class Post():
     # DB Connection
-    connect = MongoClient(conf._conf["address"], conf._conf["port"])
-    posts = connect[conf._conf["database"]][conf._conf["collection"]]
+    connect = MongoClient(_conf["address"], _conf["port"])
+    posts = connect[_conf["database"]][_conf["collection"]]
 
     def __init__(self):
         # Read DB
@@ -22,22 +21,25 @@ class Post():
         # Read DB
         self.unique_id = unique_id
         post = Post.posts.find_one({"unique_id": self.unique_id})
-        del post['_id']
         self.content = post["content"]
         self.limit = post["limit"]
         self.delkey = post["delkey"]
-        print(post)
 
-    def post(self):
+    def post(self, content="", delkey=""):
+        self.content = content
+        self.delkey = delkey
         if self.delkey == "":
             self.delkey = make_delkey()
         self.limit = datetime.timedelta(seconds=28800)
 
         # Writing DB
         try:
-            result = collection.insert_one(
-                    json.dumps(self).translate(string.marketrans("",""),"[]"))
-            return True
+            result = Post.posts.insert_one({"unique_id": getNextSequence(
+                db.posts, "unique_id"),
+                "content": self.content,
+                "limit": self.limit,
+                "delkey": self.delkey})
+            return result["unique_id"]
         except Exception as e:
             return e
 
@@ -65,3 +67,12 @@ def make_delkey(length=6):
 
         return delkey
 
+if __name__ == "__main__":
+    test = Post()
+
+    test.unique_id = 1
+    test.connect = "にくまん"
+    test.delkey = "hogefuga"
+    test.limit = 123456.78
+
+    print(test.post())
