@@ -1,4 +1,4 @@
-- hosts: lxc-mongodb
+- hosts: mongodb
   remote_user: root
   tasks:
     - name: mongodbのインストール

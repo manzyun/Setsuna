@@ -3,6 +3,7 @@ from pymongo import MongoClient
 import json
 import datetime
 import random
+import bson
 
 
 class Post():
@@ -12,15 +13,15 @@ class Post():
 
     def __init__(self):
         # Read DB
-        self.unique_id = None
+        self._id = None
         self.content = ""
         self.limit = 0.0
         self.delkey = ""
 
-    def read(self, unique_id):
+    def read(self, _id):
         # Read DB
-        self.unique_id = unique_id
-        post = Post.posts.find_one({"unique_id": self.unique_id})
+        self._id = _id
+        post = Post.posts.find_one({"_id": self._id})
         self.content = post["content"]
         self.limit = post["limit"]
         self.delkey = post["delkey"]
@@ -34,20 +35,18 @@ class Post():
 
         # Writing DB
         try:
-            result = Post.posts.insert_one({"unique_id": get_next_sequence(
-                db.posts, "unique_id"),
-                "content": self.content,
+            result = Post.posts.insert_one({"content": self.content,
                 "limit": self.limit,
                 "delkey": self.delkey})
-            return result["unique_id"]
+            return str(result["_id"])
         except Exception as e:
             return e
 
     def delete(self, delkey):
         try:
-            if self._id == unique_id and self.delkey == delkey:
+            if self._id == _id and self.delkey == delkey:
                 # Remove post in DB
-                collection.delete_one({"unique_id": self.unique_id})
+                collection.delete_one({"_id": self._id})
                 return True
             else:
                 return False
@@ -67,14 +66,9 @@ def make_delkey(length=6):
 
         return delkey
 
-def get_next_sequence(collection, name):
-    return collection.find_and_modify(query = {"_id": name},
-            update = {"$inc": {"seq": 1}}, new = True).get("seq")
-
 if __name__ == "__main__":
     test = Post()
 
-    test.unique_id = 1
     test.connect = "にくまん"
     test.delkey = "hogefuga"
     test.limit = 123456.78

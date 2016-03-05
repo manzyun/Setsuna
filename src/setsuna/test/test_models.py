@@ -8,8 +8,7 @@ import datetime
 import calendar
 
 
-testdata = {"unique_id": 0,
-            "content": "美味しい美味しいスープカレー",
+testdata = {"content": "美味しい美味しいスープカレー",
             "limit": calendar.timegm(
                 datetime.datetime.utcnow().timetuple()),
             "delkey": "hogefuga"}
@@ -21,18 +20,17 @@ class TestPost(TestCase):
 
     def setUp(self):
         # とりあえず書く
-        testindex = TestPost.collection.insert_one(testdata)
+        self.testindex = TestPost.collection.insert_one(testdata)
 
     def tearDown(self):
-        TestPost.collection.delete_one({"unique_id": 0})
+        TestPost.collection.delete_one(self.testindex)
 
     def test_make_model(self):
         """ モデルが読み込まれてインスタンスが生成されるか """
         model = models.Post()
-        model.read(testdata["unique_id"])
+        model.read(self.testindex)
 
-        d = {"unique_id": model.unique_id,
-                "content": model.content,
+        d = {"content": model.content,
                 "limit": model.limit,
                 "delkey": model.delkey}
 
@@ -54,7 +52,7 @@ class TestPost(TestCase):
 
     def test_delete_model(self):
         """ 狙ったレコードがパスワードが合致した場合に削除されるか """
-        model = models.Post(testdata["unique_id"])
+        model = models.Post(self.testindex)
         model.delete(testdata["delkey"])
 
         self.assertRaises(NoneRecordException,
@@ -62,7 +60,7 @@ class TestPost(TestCase):
 
     def test_dead_model(self):
         """ リミットオーバーした場合投稿が削除されるか """
-        model = models.Post(testdata["unique_id"])
+        model = models.Post(self.testindex)
         model.apoptosis()
 
         self.assertRaises(NoneRecordException,

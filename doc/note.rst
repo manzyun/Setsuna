@@ -22,3 +22,7 @@
   - flask
   - pudb(お好みで）
   - nose
+
+MongoDBのサーバー側セットアップ
+
+- bind_ipのコメントアウト忘れるな！
