@@ -1,4 +1,4 @@
-from conf import _conf
+from .conf import _conf
 from pymongo import MongoClient
 import json
 import datetime

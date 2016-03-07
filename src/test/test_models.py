@@ -1,4 +1,6 @@
 import unittest
+from importer import import_my_module
+import_my_module("../setsuna")
 
 from setsuna import conf, models
 from unittest import TestCase, expectedFailure
