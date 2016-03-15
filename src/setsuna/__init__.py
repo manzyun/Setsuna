@@ -1,4 +1,4 @@
 from flask import Flask
 app = Flask(__name__)
 
-from . import conf, api, views
+import setsuna.api, setsuna.view

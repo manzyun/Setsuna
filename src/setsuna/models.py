@@ -1,4 +1,4 @@
-from .conf import _conf
+from setsuna import conf
 from pymongo import MongoClient
 from datetime import datetime, timedelta
 import random
@@ -7,10 +7,6 @@ timeformat = '%Y-%m-d %H:%M:%S'
 
 
 class Post:
-    # DB Connection
-    connect = MongoClient(_conf['address'], _conf['port'])
-    posts = connect[_conf['database']][_conf['collection']]
-
     def __init__(self, unique_id=None):
         if unique_id is None:
             self.unique_id = ''
