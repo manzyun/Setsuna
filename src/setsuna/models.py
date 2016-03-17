@@ -1,5 +1,4 @@
-from setsuna import conf
-from pymongo import MongoClient
+from . import conf
 from datetime import datetime, timedelta
 import random
 
@@ -16,26 +15,33 @@ class Post:
         else:
             # Read DB
             self.unique_id = unique_id
-            post = Post.posts.find_one({'_id': self.unique_id})
+            post = conf.posts.find_one({'_id': self.unique_id})
             self.content = post['content']
-            self.limit = post['limit']
+            self.limit = datetime.strptime(post['limit'], timeformat)
             self.delkey = post['delkey']
 
-    def post(self, delkey=''):
-        self.delkey = delkey if delkey != '' else make_delkey()
+    def post(self):
+        self.delkey = self.delkey if self.delkey != '' else make_delkey()
         self.limit = (datetime.utcnow() + timedelta(seconds=86400)).strftime(timeformat)
 
         # Writing DB
-        result = Post.posts.insert_one({'content': self.content,
+        result = conf.posts.insert_one({'content': self.content,
                                         'limit': self.limit,
                                         'delkey': self.delkey})
         self.unique_id = str(result.inserted_id)
         return result.inserted_id
 
+    def tell(self):
+        self.limit += timedelta(seconds=3600)
+
+        # Update DB
+        result = conf.posts.update_one({'unique_id': self.unique_id},{'limit': self.limit})
+        return result.upserted_id
+
     def delete(self,  delkey=''):
         if self.delkey == delkey:
             # Remove post in DB
-            Post.posts.delete_one({'_id': self.unique_id})
+            conf.posts.delete_one({'_id': self.unique_id})
             return True
         else:
             return False
