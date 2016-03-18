@@ -1,4 +1,4 @@
-from . import app, models, conf
+from setsuna import app, models, conf
 from pymongo import MongoClient
 from flask import abort, jsonify, request, make_response
 
@@ -26,6 +26,7 @@ def index():
 @app.route('/api/v1.0/posts', methods=['GET'])
 def get_posts():
     news = conf.posts.find().limit(10)
+    print(news)
     return jsonify(news)
 
 
