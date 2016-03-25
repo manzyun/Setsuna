@@ -1,11 +1,15 @@
 from setsuna import app, models, conf
 from pymongo import MongoClient
-from flask import abort, jsonify, request, Response
+from flask import abort, jsonify, Request, request, Response
 import json
 from bson import objectid
+import random
 
 client = MongoClient()
 
+@app.errorhandler(400)
+def bad_request(error):
+    return Response("{error': 'Bad Request', 'message': 'Sorry, I can not get request.", 400)
 
 @app.errorhandler(404)
 def not_found(error):
@@ -14,7 +18,7 @@ def not_found(error):
 
 @app.errorhandler(500)
 def internal_error(error):
-    return Response("['error': 'Internal Server Error', 'message': 'Sorry Internal server error...}", 500)
+    return Response("{'error': 'Internal Server Error', 'message': 'Sorry, Internal server error...}", 500)
 
 
 def know_post(unique_id):
@@ -25,13 +29,12 @@ def know_post(unique_id):
         return False
 
 
-@app.route('/api/v1.0/')
+@app.route('/api/v1.0')
 def index():
-    print('hello')
     return jsonify({'title': 'Setsuna API version 1.0'})
 
 
-@app.route('/api/v1.0/posts', methods=['GET'])
+@app.route('/api/v1.0/posts/', methods=['GET'])
 def get_posts():
     news = []
     bson_news = conf.posts.find().limit(10)
@@ -56,7 +59,11 @@ def get_post(unique_id):
 def tell_post(unique_id):
     if know_post(unique_id):
         post = models.Post(unique_id=unique_id)
-        return json.dumps(conf.posts.find({'_id': post.tell()}))
+        post.tell()
+
+        res = conf.posts.find_one({'_id': objectid.ObjectId(unique_id)})
+        res['_id'] = str(res['_id'])
+        return json.dumps(res)
 
 
 @app.route('/api/v1.0/post/<unique_id>', methods=['DELETE'])
@@ -72,14 +79,33 @@ def delete_post(unique_id):
             return jsonify({'result': False, 'message': 'Not matching password.'})
 
 
-@app.route('/api/v1.0/post/', methods=['POST'])
+@app.route('/api/v1.0/post', methods=['POST'])
 def post_content():
-    if not request.json or not 'content' in request.json:
+    if not Request.get_json(request):
         abort(400)
 
+    req = Request.get_json(request)
     post = models.Post()
-    post.content = request.json['content']
-    post.delkey = request.json['delkey'] if 'delkey' in request.json else ''
+    post.content = req['content']
+    post.delkey = req['delkey'] if 'delkey' in req else make_delkey()
     result = post.post()
-    return json.dumps(conf.posts.find({'_id': result}))
+
+    # Create response data.
+    res = conf.posts.find_one({'_id': result})
+    res['_id'] = str(res['_id'])
+    return json.dumps(res)
+
+
+def make_delkey(length=6):
+    # Make font map
+    alphabets = []
+    codes = (('a', 'z'), ('A', 'Z'), ('0', '9'))
+    for r in codes:
+        chars = map(chr, range(ord(r[0]), ord(r[1]) + 1))
+        alphabets.extend(chars)
+
+        password = [random.choice(alphabets) for _ in range(length)]
+        delkey = ''.join(password)
+
+        return delkey
 
