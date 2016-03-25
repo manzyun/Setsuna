@@ -1,6 +1,7 @@
 from . import conf
 from datetime import datetime, timedelta
 import random
+from bson import objectid
 
 timeformat = '%Y-%m-d %H:%M:%S'
 
@@ -59,15 +60,3 @@ def make_delkey(length=6):
         delkey = ''.join(password)
 
         return delkey
-
-if __name__ == '__main__':
-    test = Post()
-
-    test.connect = 'にくまん'
-    test.delkey = 'hogefuga'
-    test.limit = 123456.78
-
-    read = test.post()
-
-    samplepost = Post()
-
