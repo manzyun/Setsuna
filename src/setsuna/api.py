@@ -1,6 +1,6 @@
 from setsuna import app, models, conf
 from pymongo import MongoClient
-from flask import abort, jsonify, request, make_response
+from flask import abort, jsonify, request, Response
 import json
 from bson import objectid
 
@@ -9,11 +9,16 @@ client = MongoClient()
 
 @app.errorhandler(404)
 def not_found(error):
-    return make_response({'error': 'Not Found', 'message': 'This post was deleted maybe.'})
+    return Response("{'error': 'Not Found', 'message': 'This post was deleted maybe.'}", 404)
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    return Response("['error': 'Internal Server Error', 'message': 'Sorry Internal server error...}", 500)
 
 
 def know_post(unique_id):
-    if unique_id in conf.posts.find({'unique_id': unique_id}):
+    if conf.posts.find({'_id': objectid.ObjectId(unique_id)}).count() > 0:
         return True
     else:
         abort(404)
@@ -32,7 +37,7 @@ def get_posts():
     bson_news = conf.posts.find().limit(10)
     for b_new in bson_news:
         if isinstance(b_new, dict):
-            b_new["_id"] = str(b_new["_id"])
+            b_new['_id'] = str(b_new['_id'])
 
         news.append(b_new)
 
@@ -42,7 +47,8 @@ def get_posts():
 @app.route('/api/v1.0/post/<unique_id>', methods=['GET'])
 def get_post(unique_id):
     if know_post(unique_id):
-        post = conf.posts.find({'unique_id': unique_id})
+        post = conf.posts.find_one({'_id': objectid.ObjectId(unique_id)})
+        post["_id"] = str(post['_id'])
         return json.dumps(post)
 
 
@@ -50,7 +56,7 @@ def get_post(unique_id):
 def tell_post(unique_id):
     if know_post(unique_id):
         post = models.Post(unique_id=unique_id)
-        return json.dumps(conf.posts.find({'unique_id': post.tell()}))
+        return json.dumps(conf.posts.find({'_id': post.tell()}))
 
 
 @app.route('/api/v1.0/post/<unique_id>', methods=['DELETE'])
@@ -75,5 +81,5 @@ def post_content():
     post.content = request.json['content']
     post.delkey = request.json['delkey'] if 'delkey' in request.json else ''
     result = post.post()
-    return json.dumps(conf.posts.find({'unique_id': result}))
+    return json.dumps(conf.posts.find({'_id': result}))
 
