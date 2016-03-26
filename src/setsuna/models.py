@@ -41,7 +41,7 @@ class Post:
     def delete(self,  delkey=''):
         if self.delkey == delkey:
             # Remove post in DB
-            conf.posts.delete_one({'_id': self.unique_id})
+            conf.posts.delete_one({'_id': objectid.ObjectId(self.unique_id)})
             return True
         else:
             return False

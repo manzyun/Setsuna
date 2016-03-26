@@ -31,10 +31,10 @@ def know_post(unique_id):
 
 @app.route('/api/v1.0')
 def index():
-    return jsonify({'title': 'Setsuna API version 1.0'})
+    return jsonify({'title': 'Setsuna API', 'version': 'version 1.0'})
 
 
-@app.route('/api/v1.0/posts/', methods=['GET'])
+@app.route('/api/v1.0/posts', methods=['GET'])
 def get_posts():
     news = []
     bson_news = conf.posts.find().limit(10)
@@ -49,6 +49,7 @@ def get_posts():
 
 @app.route('/api/v1.0/post/<unique_id>', methods=['GET'])
 def get_post(unique_id):
+    print(unique_id)
     if know_post(unique_id):
         post = conf.posts.find_one({'_id': objectid.ObjectId(unique_id)})
         post["_id"] = str(post['_id'])
@@ -69,14 +70,16 @@ def tell_post(unique_id):
 @app.route('/api/v1.0/post/<unique_id>', methods=['DELETE'])
 def delete_post(unique_id):
     if know_post(unique_id):
-        post = models.Post(unique_id=unique_id)
-        if not request.json or not 'delkey' in request.json:
-            abort(400)
+        if not Request.get_json(request):
+            req = request.get_json(request)
+            post = models.Post(unique_id=unique_id)
+            if not 'delkey' in req:
+                abort(400)
 
-        if post.delete(request.json['delkey']):
-            return jsonify({'result': True})
-        else:
-            return jsonify({'result': False, 'message': 'Not matching password.'})
+            if post.delete(request.json['delkey']):
+                return json.dumps({'result': True})
+            else:
+                return json.dumps({'result': False, 'message': 'Not matching password.'})
 
 
 @app.route('/api/v1.0/post', methods=['POST'])
@@ -85,6 +88,9 @@ def post_content():
         abort(400)
 
     req = Request.get_json(request)
+    if not 'content' in req:
+        abort(400)
+
     post = models.Post()
     post.content = req['content']
     post.delkey = req['delkey'] if 'delkey' in req else make_delkey()
