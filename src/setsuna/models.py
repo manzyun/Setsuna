@@ -5,7 +5,7 @@ from bson import objectid
 timeformat = '%Y-%m-%d %H:%M:%S'
 
 
-class Post:
+class Post(object):
     def __init__(self, unique_id=None):
         if unique_id is None:
             self.unique_id = ''

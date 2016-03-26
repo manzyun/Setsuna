@@ -1,4 +1,4 @@
-from setsuna import app, models, conf
+from . import app, models, conf
 from pymongo import MongoClient
 from flask import abort, jsonify, Request, request, Response
 import json
@@ -7,9 +7,11 @@ import random
 
 client = MongoClient()
 
+
 @app.errorhandler(400)
 def bad_request(error):
     return Response("{error': 'Bad Request', 'message': 'Sorry, I can not get request.", 400)
+
 
 @app.errorhandler(404)
 def not_found(error):
