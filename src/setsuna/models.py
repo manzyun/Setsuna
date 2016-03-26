@@ -21,7 +21,7 @@ class Post(object):
             self.delkey = post['delkey']
 
     def post(self):
-        self.limit = datetime.utcnow() + timedelta(seconds=86400)
+        self.limit = datetime.utcnow() + timedelta(days=1)
 
         # Writing DB
         result = conf.posts.insert_one({'content': self.content,
@@ -31,7 +31,7 @@ class Post(object):
         return result.inserted_id
 
     def tell(self):
-        self.limit = self.limit + timedelta(seconds=3600)
+        self.limit = self.limit + timedelta(hours=1)
 
         # Update DB
         conf.posts.update_one({'_id': objectid.ObjectId(self.unique_id)},

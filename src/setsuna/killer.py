@@ -11,9 +11,7 @@ def killing():
 
     while True:
         try:
-            # Wait Time
             time.sleep(1)
-
             logging.info('-!> Killing.')
 
             # Killing Target Search
@@ -22,7 +20,7 @@ def killing():
 
             targets = []
             for target in posts:
-                if target.limit < datetime.now() - timedelta(day=1):
+                if target.limit < datetime.now() - timedelta(minutes=60):
                     targets.append(target.unique_id)
 
             # Killing
@@ -32,11 +30,11 @@ def killing():
                 count = kill
 
             logging.info('-!< %s killed.'.format(count))
-
         except KeyboardInterrupt:
             break
 
     logging.info('-<- Stop killing')
 
 
-threading.Thread(target=killing, name='killer')
+killer = threading.Thread(target=killing, name='killer')
+killer.run()
