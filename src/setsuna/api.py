@@ -49,6 +49,19 @@ def get_posts():
     return json.dumps(news)
 
 
+@app.route('/api/v1.0/<lang>/posts', methods=['GET'])
+def get_posts(lang):
+    news = []
+    bson_news = conf.posts.find({'lang': lang}).limit(10)
+    for b_new in bson_news:
+        if isinstance(b_new, dict):
+            b_new['_id'] = str(b_new['_id'])
+
+        news.append(b_new)
+
+    return json.dumps(news)
+
+
 @app.route('/api/v1.0/post/<unique_id>', methods=['GET'])
 def get_post(unique_id):
     print(unique_id)
