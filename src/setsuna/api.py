@@ -1,11 +1,14 @@
+import json
+from datetime import datetime
 from . import app, models, conf
 from pymongo import MongoClient
 from flask import abort, jsonify, Request, request, Response
-import json
+
 from bson import objectid
 import random
 
 client = MongoClient()
+ISODatetime = '%Y-%M-%DTHH:mmZ'
 
 
 @app.errorhandler(400)
@@ -39,7 +42,20 @@ def index():
 @app.route('/api/v1.0/posts', methods=['GET'])
 def get_posts():
     news = []
-    bson_news = conf.posts.find().limit(10)
+    bson_news = conf.posts.find().sort({'timestamp': 1})
+    for b_new in bson_news:
+        if isinstance(b_new, dict):
+            b_new['_id'] = str(b_new['_id'])
+
+        news.append(b_new)
+
+    return json.dumps(news)
+
+
+@app.route('/api/v1.0/posts?limit=<int:limit>', methods=['GET'])
+def get_posts(limit):
+    news = []
+    bson_news = conf.posts.find().limit(limit).sort({'timestamp': 1})
     for b_new in bson_news:
         if isinstance(b_new, dict):
             b_new['_id'] = str(b_new['_id'])
@@ -52,7 +68,41 @@ def get_posts():
 @app.route('/api/v1.0/<lang>/posts', methods=['GET'])
 def get_posts(lang):
     news = []
-    bson_news = conf.posts.find({'lang': lang}).limit(10)
+    bson_news = conf.posts.find({'lang': lang}).sort({'timestamp': 1})
+    for b_new in bson_news:
+        if isinstance(b_new, dict):
+            b_new['_id'] = str(b_new['_id'])
+
+        news.append(b_new)
+
+    return json.dumps(news)
+
+
+@app.route('/api/v1.0/posts?start=<date_time_s>&end=<date_time_e>', methods=['GET'])
+def get_posts_ontime(date_time_s, date_time_e):
+    news = []
+    bson_news = conf.posts.find({'timestanp':
+                                {'$gte': datetime.strptime(date_time_s, ISODatetime),
+                                 '$lte:': datetime.strptime(date_time_e, ISODatetime)}
+                                 }).sort({'timestamp': 1})
+    for b_new in bson_news:
+        if isinstance(b_new, dict):
+            b_new['_id'] = str(b_new['_id'])
+
+        news.append(b_new)
+
+    return json.dumps(news)
+
+
+@app.route('/api/v1.0/<lang>/posts?start=<date_time_s>&end=<date_time_e>', methods=['GET'])
+def get_posts_ontime(lang, date_time_s, date_time_e):
+    news = []
+    bson_news = conf.posts.find({{'lang': lang},
+                                 {'timestanp':
+                                 {'$gte': datetime.strptime(date_time_s, ISODatetime),
+                                  '$lte:': datetime.strptime(date_time_e, ISODatetime)}
+                                  }
+                                 }).sort({'timestamp': 1})
     for b_new in bson_news:
         if isinstance(b_new, dict):
             b_new['_id'] = str(b_new['_id'])
