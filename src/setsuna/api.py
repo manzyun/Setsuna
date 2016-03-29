@@ -8,7 +8,7 @@ from bson import objectid
 import random
 
 client = MongoClient()
-ISODatetime = '%Y-%M-%DTHH:mmZ'
+ISODatetime = '%Y-%M-%dT%H:%M%z'
 
 
 @app.errorhandler(400)
