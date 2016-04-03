@@ -5,7 +5,7 @@
 3行でまとめる
 =============
 
-- 投稿はそのままだと8時間で消える
+- 投稿はそのままだと24時間で消える
 - 投稿するには下限200文字以上を超えなければならない
 - 「伝われ」ボタンで投稿の延命ができる
 
@@ -21,26 +21,20 @@ APIはAPIでJSONを渡す。
 
 - 基本
 
-  - http://setsuna.org/api/<version>/
+  - http://setsuna.org/api/<version>/posts
 
-- 最新投稿を複数表示
+- 投稿を全件表示
 
   - GET
   - (None)
   - (None)
-  - 例: GET http://setsuna.org/api/1/
+  - 例: GET http://setsuna.org/api/v1.0/posts
 
     - 返答
 
       .. code-block:: json
 
          [
-          {
-           "developerMessage" : "...",
-           "userMessage" : "...",
-           "errorCode" : 100,
-           "moreInfo" : "http://developers.setsuna.org/errors/100"
-          },
           {
            "content" : "...",
            "limit" : "..."
@@ -54,21 +48,15 @@ APIはAPIでJSONを渡す。
 - 投稿の複数表示
 
   - GET
-  - news
-  - posts=10
-  - 例: GET http://setsuna.org/api/1/news?start=0&end=20
+  - posts
+  - limit=10
+  - 例: GET http://setsuna.org/api/v1.0/posts&limit=20
 
     - 返答
 
       .. code-block:: json
 
          [
-          {
-           "developerMessage" : "...",
-           "userMessage" : "...",
-           "errorCode" : 100,
-           "moreInfo" : "http://developers.setsuna.org/errors/100"
-          },
           {
            "content" : "...",
            "limit" : "..."
@@ -83,25 +71,17 @@ APIはAPIでJSONを渡す。
 
   - POST
   - tell
-  - id=<UnixTime>
-  - 例：POST http://setsuna.org/api/1/123456
+  - unique_id=ObjectId
+  - 例：POST http://setsuna.org/api/v1.0/tell/123456
 
     - 返答
 
       .. code-block:: json
 
-         [
-          {
-           "developerMessage" : "...",
-           "userMessage" : "...",
-           "errorCode" : 100,
-           "moreInfo" : "http://developers.setsuna.org/errors/100"
-          }
           {
            "content" : "...",
            "limit" : "..."
           }
-         ]
 
 投稿周り
 ------------------------
@@ -113,54 +93,38 @@ APIはAPIでJSONを渡す。
   - POST
   - post
   - content=""
-  - password=""
-  - 例: POST http://setsuna.org/api/1/post?content="焼肉食べたいけどなんたらかんたら"&password="hogefuga"
+  - delkey=""
+  - 例: POST http://setsuna.org/api/v1.0/posts
+  - contentとpasswordはjsonで渡す
 
     - 返答
 
       .. code-block:: json
 
-         [
-          {
-           "developerMessage" : "...",
-           "userMessage" : "...",
-           "errorCode" : 100,
-           "moreInfo" : "http://developers.setsuna.org/errors/100"
-          }
           {
            "id" : 123456
            "content" : "焼肉食べたいけどなんたらかんたら",
            "password" : "hogefuga"
            "limit" : "..."
           }
-         ]
 
 
 - 投稿の削除
 
   - POST
   - delete
-  - id=UnixTime
-  - password=投稿時に指定したパスワード
-  - 例：DELETE http://setsuna.org/api/1/123456
-
+  - id=ObjectId
+  - delkey=投稿時に指定したパスワード
+  - 例：DELETE http://setsuna.org/api/v1.0/123456
+  - passwordはjsonで渡す
     - 返答
 
       .. code-block:: json
 
-         [
           {
-           "developerMessage" : "...",
-           "userMessage" : "...",
-           "errorCode" : 100,
-           "moreInfo" : "http://developers.setsuna.org/errors/100"
+            'error': Not Found,
+            'message': This post was deleted maybe.
           }
-          {
-           "id" : 123456
-           "content" : "焼肉食べたいけどなんたらかんたら",
-           "limit" : "..."
-          }
-         ]
   
 参考資料
 ========

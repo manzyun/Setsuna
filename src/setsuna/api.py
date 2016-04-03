@@ -53,7 +53,7 @@ def get_posts():
 
 
 @app.route('/api/v1.0/posts?limit=<int:limit>', methods=['GET'])
-def get_posts(limit):
+def get_posts_limit(limit):
     news = []
     bson_news = conf.posts.find().limit(limit).sort({'timestamp': 1})
     for b_new in bson_news:
@@ -66,7 +66,7 @@ def get_posts(limit):
 
 
 @app.route('/api/v1.0/<lang>/posts', methods=['GET'])
-def get_posts(lang):
+def get_posts_lang(lang):
     news = []
     bson_news = conf.posts.find({'lang': lang}).sort({'timestamp': 1})
     for b_new in bson_news:
@@ -95,7 +95,7 @@ def get_posts_ontime(date_time_s, date_time_e):
 
 
 @app.route('/api/v1.0/<lang>/posts?start=<date_time_s>&end=<date_time_e>', methods=['GET'])
-def get_posts_ontime(lang, date_time_s, date_time_e):
+def get_posts_lang_ontime(lang, date_time_s, date_time_e):
     news = []
     bson_news = conf.posts.find({{'lang': lang},
                                  {'timestanp':
