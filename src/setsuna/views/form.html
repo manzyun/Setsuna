@@ -1,0 +1,10 @@
+{% extends "header.html" %}
+{% block body %}
+<p>
+    <form action="{{ url_for('add_entry') }}">
+        <label for="content">Please write your thinking</label><br>
+        <textarea id="content" name="content" cols="30" rows="10" required="required" placeholder="your thinking is here."></textarea>
+        <label for="password">Password</label><input type="text" name="delkey" id="password">
+    </form>
+</p>
+{% endblock %}

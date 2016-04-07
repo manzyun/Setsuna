@@ -1,0 +1,22 @@
+{% extends "header.html" %}
+{% block body %}
+{% if session.get('posted') %}
+<section>
+    <div id="posted">
+        <h2>おつかれさまでした</h2>
+    </div>
+</section>
+
+    {% for content in contents %}
+<section>
+<div class="column{{ loop.index0 }}">
+<article>
+    <p>
+        {{ content[value] }}
+    </p>
+    <p><a href="{{ content[key] }}">Read more</a></p>
+</article>
+</div>
+</section>
+    {% endfor %}
+{% endblock %}
