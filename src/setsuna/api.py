@@ -42,7 +42,7 @@ def index():
 @app.route('/api/v1.0/posts', methods=['GET'])
 def get_posts():
     news = []
-    bson_news = conf.posts.find().sort({'timestamp': 1})
+    bson_news = conf.posts.find().sort({'Timestamp': 1})
     for b_new in bson_news:
         if isinstance(b_new, dict):
             b_new['_id'] = str(b_new['_id'])

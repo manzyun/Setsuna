@@ -6,15 +6,16 @@
         <h2>おつかれさまでした</h2>
     </div>
 </section>
+{% endif %}
 
     {% for content in contents %}
 <section>
 <div class="column{{ loop.index0 }}">
 <article>
     <p>
-        {{ content[value] }}
+        {{ content['content'] }}
     </p>
-    <p><a href="{{ content[key] }}">Read more</a></p>
+    <p><a href="{{ content['_id'] }}">Read more</a></p>
 </article>
 </div>
 </section>

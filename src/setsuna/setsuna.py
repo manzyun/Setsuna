@@ -9,6 +9,7 @@ DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
 
+
 def init_db():
     scheme.init_db()
 
