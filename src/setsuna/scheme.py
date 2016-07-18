@@ -6,14 +6,15 @@ db = client[conf._conf["database"]]
 collection = db[conf._conf["collection"]]
 
 ''' json image
-[
-	{
-		{
-                        "unique_id" : 0,
-			"content" : "あかさたな",
-			"limit" : 1234.5678,
-			"password" : "hogefuga"
-		}
-	}
-]
+"ja": {
+        01234: {
+        "content" : "あかさたな",
+        "limit" : 1234.5678,
+        "password" : "hogefuga"
+    },
+    {
+    }
+},
+"en": {
+}
 '''

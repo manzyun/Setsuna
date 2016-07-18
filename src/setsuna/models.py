@@ -6,43 +6,46 @@ timeformat = '%Y-%m-%d %H:%M:%S'
 
 
 class Post(object):
-    def __init__(self, unique_id=None):
-        if unique_id is None:
-            self.unique_id = ''
-            self.content = ''
-            self.limit = datetime
-            self.delkey = ''
-        else:
-            # Read DB
-            self.unique_id = unique_id
-            post = conf.posts.find_one({'_id': objectid.ObjectId(self.unique_id)})
-            self.content = post['content']
-            self.limit = datetime.strptime(post['limit'], timeformat)
-            self.delkey = post['delkey']
+    def __init__(self, content, limit, password):
+        self.content = content
+        self.limit = limit
+        self.password = password
+    def __str__(self):
+        return str(self.__dict__)
+    def __repr__(self):
+        return str(self.__dict__)
+    def __getitem__(self, key):
+        return self.__dict__[key]
+    def __setitem__(self, key, value):
+        self.__dict__[key] = value
 
-    def post(self):
-        self.limit = datetime.utcnow() + timedelta(days=1)
+class IdWithPost(Post)
+    def __init__(self, unique_id, post):
+        self.unique_id = unique_id
+        self.post = post
+    def __str__(self):
+        return str(self.__dict__)
+    def __repr__(self):
+        return str(self.__dict__)
+    def __getitem__(self, key):
+        return self.__dict__[key]
+    def __setitem__(self, key, value):
+        self.__dict__[key] = value
 
-        # Writing DB
-        result = conf.posts.insert_one({'content': self.content,
-                                        'limit': self.limit.strftime(timeformat),
-                                        'delkey': self.delkey})
-        self.unique_id = str(result.inserted_id)
-        return result.inserted_id
-
-    def tell(self):
-        self.limit = self.limit + timedelta(hours=1)
-
-        # Update DB
-        conf.posts.update_one({'_id': objectid.ObjectId(self.unique_id)},
-                              {'$set': {'limit': self.limit.strftime(timeformat)}})
-        return True
-
-    def delete(self,  delkey=''):
-        if self.delkey == delkey:
-            # Remove post in DB
-            conf.posts.delete_one({'_id': objectid.ObjectId(self.unique_id)})
-            return True
-        else:
-            return False
+class LangPost(Post):
+    def __init__(self, lang):
+        self.lang = lang
+        self.posts = []
+    def __iter__(self):
+        return self.__dict__.iteritems()
+    def __str__(self):
+        return str(self.__dict__)
+    def __len__(self):
+        return len(self.__dict__)
+    def __repr__(self):
+        return str(self.__dict__)
+    def __getitem__(self, unique_id):
+        return self.__dict__[unique_id]
+    def __setitem__(self, unique_id, post):
+        self.__dict__[unique_id] = post
 
