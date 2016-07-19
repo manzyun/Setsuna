@@ -46,7 +46,6 @@ class LangPost():
     def __repr__(self) -> str:
         return str(self.__dict__)
     def __getitem__(self, unique_id: int) -> IdWithPost:
-        return self.__dict__[unique_id]
+        return self.__dict__.index(unique_id)
     def __setitem__(self, unique_id: int, post: Post):
-        self.__dict__[unique_id] = post
-
+        self.__dict__.append(IdWithPost(unique_id, post))
