@@ -51,14 +51,12 @@ Plus unique id for post.
         return str(self.__dict__)
     def __repr__(self) -> str:
         return str(self.__dict__)
-            def __iter__(self):
-        return self.__dict__.iteritems()
     def __getitem__(self, key: int):
         return self.__dict__[key]
     def __setitem__(self, key: int, value: Post) -> None:
         self.__dict__[key] = value
 
-class LangPost():
+class LangPosts():
 '''
 Segregation language posts.  
 '''
@@ -81,4 +79,4 @@ Segregation language posts.
     def __getitem__(self, unique_id: int) -> IdWithPost:
         return self.post.index(unique_id)
     def __setitem__(self, unique_id: int, post: Post):
-        self.posts.append(IdWithPost(unique_id, post))
+        self.posts.IdWithPost(unique_id, post))
