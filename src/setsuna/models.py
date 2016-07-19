@@ -27,6 +27,8 @@ password -- Password for manually delete.
         return str(self.__dict__)
     def __repr__(self) -> str:
         return str(self.__dict__)
+    def __iter__(self):
+        return self.__dict__.iteritems()
     def __getitem__(self, key: str) -> int ~ str:
         return self.__dict__[key]
     def __setitem__(self, key: str, value) -> None:
@@ -49,6 +51,8 @@ Plus unique id for post.
         return str(self.__dict__)
     def __repr__(self) -> str:
         return str(self.__dict__)
+            def __iter__(self):
+        return self.__dict__.iteritems()
     def __getitem__(self, key: int):
         return self.__dict__[key]
     def __setitem__(self, key: int, value: Post) -> None:
