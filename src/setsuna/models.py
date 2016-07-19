@@ -1,26 +1,24 @@
 import typing
-from . import conf
-from datetime import datetime, timedelta
-from bson import objectid
 
-timeformat = '%Y-%m-%d %H:%M:%S'
 
 '''
-`JSON API`_ におけるdataオブジェクトの中身を定義しておくモジュールである。
-
-.. _`JSON API`: http://jsonapi.org/
+This module is model defining for Setsuna.  
 '''
 
 class Post:
 '''
-投稿の基礎となるクラス
+Base post class.  
+
+content -- Post content.  
+limit -- Delete time. Record style is Unix time.
+password -- Password for manually delete.
 '''
     def __init__(self, content: str, limit: int, password: str) -> None:
     '''
-    ポストの作成。
-    @param content 投稿内容
-    @param limit 削除時間(Unixtime)
-    @param password 手動削除時のパスワード
+    Make post.  
+    content -- Post content.  
+    limit -- Delete time. Record style is Unix time.
+    password -- Password for manually delete.
     '''
         self.content = content
         self.limit = limit
@@ -36,14 +34,14 @@ class Post:
 
 class IdWithPost(Post)
 '''
-投稿にunique_idを付与したクラス
+Plus unique id for post.  
 '''
     def __init__(self, unique_id: int, post: Post) -> None:
     '''
-    投稿にunique_idを付与する
+    Initialize instance  
     
-    @param unique_id mongodbから取得できるid
-    @param post 投稿データ
+    unique_id -- ID from mongoDB.  
+    post -- Post data.  
     '''
         self.unique_id = unique_id
         self.post = post
@@ -58,13 +56,13 @@ class IdWithPost(Post)
 
 class LangPost():
 '''
-言語ごとに投稿を分けるクラス
+Segregation language posts.  
 '''
     def __init__(self, lang: str) -> None:
     '''
-    言語設定したリストを作る
+    Initialize instance.  
     
-    @param lang 言語コード2桁
+    lang -- Language code. 2 digit.  
     '''
         self.lang = lang
         self.posts = []
