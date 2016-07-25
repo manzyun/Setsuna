@@ -34,12 +34,132 @@ def know_post(unique_id):
         return False
 
 
-@app.route('/api/v1.0')
+@app.route('/', methods=['GET'])
 def index():
-    return jsonify({'title': 'Setsuna API', 'version': 'version 1.0'})
+    return '''
+====================
+Setsuna Web API
+====================
+
+author
+-------------
+
+Hidetsugu Takahashi a.k.a manzyun <manzyun@gmail.com>
 
 
-@app.route('/api/v1.0/posts', methods=['GET'])
+What's this?
+---------------------
+
+This is Micro SNS. Your post will delete 6 hour.
+
+But, your post is gotten response of 1 hour plus every,
+
+
+How to use
+--------------
+
+Contribution
+~~~~~~~~~~~~~~
+
+1. Make JSON::
+
+  {
+    "content":your content here,
+    "delkey": you want delete password.
+  }
+
+.. note:: If "delkey" is nothing then make random 4 digit password.
+
+2. Contribute this address your JSON on POST method.
+3. 'Comming server response your contribut infomartion in "data" section::
+
+  {
+    "id": Your contributon id,
+    "content": You contribute content,
+    "delkey": Delete contributon password,
+  }
+
+
+Response(no_comment)
+~~~~~~~~~~~~~~~~~~~~~~~
+
+1. Access contribution on POST method.
+2. Comming server response your responsed contributon information in "data" section::
+
+  {
+    "id": Your responsed contribution id,
+    "content": Your responsed contribution
+  }
+
+
+Response(comment)
+~~~~~~~~~~~~~~~~~~~~
+
+1. Make JSON::
+
+  {
+    "content":your content here,
+    "delkey": you want delete password
+  }
+
+.. note:: If "delkey" is nothing then make random 4 digit password.
+
+
+2. Contribute you want response contribution address on POST method
+3. Comming server response your contribution information in "data" section::
+
+  {
+    "id": Your contributon id,
+    "content": You contribute content,
+    "delkey": Delete contributon password,
+  }
+
+
+Delete Contribution
+~~~~~~~~~~~~~~~~~~~~~~
+
+1. Make JSON::
+
+  {
+    "delkey": your contribution has delete password.
+  }
+
+
+2. Contribute this address your JSON on DELETE method.
+3. 'Comming server response your contribute infomartion in "data" section::
+
+  {
+    "message": "Your post deleted ;)"
+  }
+
+
+.. note:: If contribution has response then delete with responsed contribution.
+
+FAQ
+-----
+
+Where web page?
+  Nothing special. Because, I want make a service and I am poor sense web design. Because so only Web and JSON API',
+
+Am I not user requiring?
+  Yes. This service is anonymity. And I can not manage a server that is managing the large amount of user information.'
+'''
+
+
+def make_template(json_id=1) -> str:
+    data = {
+    'links': {
+#            'self':  # Make from address and id
+        },
+        data: {
+        'type': 'post',
+        'id': json_id,
+        
+        }
+    }
+    return data
+
+@app.route('/posts', methods=['GET'])
 def get_posts():
     news = []
     bson_news = conf.posts.find().sort({'Timestamp': 1})
@@ -65,7 +185,7 @@ def get_posts_limit(limit):
     return json.dumps(news)
 
 
-@app.route('/api/v1.0/<lang>/posts', methods=['GET'])
+@app.route('/<lang>/posts', methods=['GET'])
 def get_posts_lang(lang):
     news = []
     bson_news = conf.posts.find({'lang': lang}).sort({'timestamp': 1})
@@ -94,7 +214,7 @@ def get_posts_ontime(date_time_s, date_time_e):
     return json.dumps(news)
 
 
-@app.route('/api/v1.0/<lang>/posts?start=<date_time_s>&end=<date_time_e>', methods=['GET'])
+@app.route('/<lang>/posts?start=<date_time_s>&end=<date_time_e>', methods=['GET'])
 def get_posts_lang_ontime(lang, date_time_s, date_time_e):
     news = []
     bson_news = conf.posts.find({{'lang': lang},
@@ -112,7 +232,7 @@ def get_posts_lang_ontime(lang, date_time_s, date_time_e):
     return json.dumps(news)
 
 
-@app.route('/api/v1.0/post/<unique_id>', methods=['GET'])
+@app.route('/post/<unique_id>', methods=['GET'])
 def get_post(unique_id):
     print(unique_id)
     if know_post(unique_id):
@@ -121,7 +241,7 @@ def get_post(unique_id):
         return json.dumps(post)
 
 
-@app.route('/api/v1.0/tell/<unique_id>', methods=['POST'])
+@app.route('/tell/<unique_id>', methods=['POST'])
 def tell_post(unique_id):
     if know_post(unique_id):
         post = models.Post(unique_id=unique_id)
@@ -132,7 +252,7 @@ def tell_post(unique_id):
         return json.dumps(res)
 
 
-@app.route('/api/v1.0/post/<unique_id>', methods=['DELETE'])
+@app.route('/post/<unique_id>', methods=['DELETE'])
 def delete_post(unique_id):
     if know_post(unique_id):
         if not Request.get_json(request):
@@ -147,7 +267,7 @@ def delete_post(unique_id):
                 return json.dumps({'result': False, 'message': 'Not matching password.'})
 
 
-@app.route('/api/v1.0/post', methods=['POST'])
+@app.route('/post', methods=['POST'])
 def post_content():
     if not Request.get_json(request):
         abort(400)
@@ -179,4 +299,3 @@ def make_delkey(length=6):
         delkey = ''.join(password)
 
         return delkey
-

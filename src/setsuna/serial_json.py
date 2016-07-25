@@ -11,7 +11,7 @@ JSON serialize from Setsuna models.
 
 # to JSON
 
-def postToJson(self, obj: models.Post) -> dict:
+def post_to_json(self, obj: models.Post) -> dict:
 '''
 Post object to JSON Object
 obj -- Want serialize Post object.  
@@ -20,23 +20,24 @@ obj -- Want serialize Post object.
     return re_dict
     raise TypeError(repr(obj) + ' is not JSON selializable')
 
-def withId(self, obj: models.IdWithPost) -> dict:
+def with_id(self, obj: models.IdWithPost) -> dict:
 '''
 IdWithPost object to JSON object.  
 obj -- Want serialize IdWithPost object.  
 '''
-    re_dict = {obj.unique_id: {k:v for k, v in obj.post}}
+    re_dict = {'id': obj.unique_id, k:v for k, v in obj.post}
     return re_dict
     raise TypeError(repr(obj) + ' is not JSON selializable')
 
-def listLang(self, obj: LangPosts) -> dict:
+def list_lang(self, obj: LangPosts) -> dict:
 '''
 LangPosts object to JSON object.  
 obj -- Want serialize LangPosts object.  
 '''
     inner_list = []
     for post in obj.posts:
-        tmp = {uid: {k:v for k, v in data} for uid, post in post}
+        tmp = {'id': uid, k:v for k, v in data for uid, data in post}
+        
         inner_list.append(tmp)
     
     re_dict = {obj.lang: inner_list}
