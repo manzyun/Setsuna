@@ -150,11 +150,11 @@ def make_template(json_id=1) -> str:
     data = {
     'links': {
 #            'self':  # Make from address and id
+            'res_to':''
         },
         data: {
         'type': 'post',
         'id': json_id,
-        
         }
     }
     return data

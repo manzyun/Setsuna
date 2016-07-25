@@ -10,16 +10,18 @@ class Post:
 Base post class.  
 
 content -- Post content.  
-limit -- Delete time. Record style is Unix time.
+limit -- Delete time. Record style is Unix time.  
 password -- Password for manually delete.
 '''
-    def __init__(self, content: str, limit: int, password: str) -> None:
+    def __init__(self,uid: int, content: str, limit: int, password: str) -> None:
     '''
     Make post.  
+    uid -- Unique ID.  
     content -- Post content.  
-    limit -- Delete time. Record style is Unix time.
-    password -- Password for manually delete.
+    limit -- Delete time. Record style is Unix time.  
+    password -- Password for manually delete.  
     '''
+        self.id = uid
         self.content = content
         self.limit = limit
         self.password = password
@@ -34,29 +36,35 @@ password -- Password for manually delete.
     def __setitem__(self, key: str, value) -> None:
         self.__dict__[key] = value
 
-class IdWithPost(Post)
+
+class ResponsePost(Post):
 '''
-Plus unique id for post.  
+Response post class.  
 '''
-    def __init__(self, unique_id: int, post: Post) -> None:
+    def __init__(self, link: int, uid: int, content: str, limit: int, password: str) -> None:
     '''
-    Initialize instance  
-    
-    unique_id -- ID from mongoDB.  
-    post -- Post data.  
+    Make response post.  
+    link -- Link post ID.  
+    uid -- Unique ID.  
+    content -- Post content.  
+    limit -- Delete time. Record style is Unix time.  
+    password -- Password for manually delete.  
     '''
-        self.unique_id = unique_id
-        self.post = post
+        self.link = link 
+        Post.__init__(uid, content, limit, password)
     def __str__(self) -> str:
         return str(self.__dict__)
     def __repr__(self) -> str:
         return str(self.__dict__)
-    def __getitem__(self, key: int):
+    def __iter__(self):
+        return self.__dict__.iteritems()
+    def __getitem__(self, key: str) -> int ~ str:
         return self.__dict__[key]
-    def __setitem__(self, key: int, value: Post) -> None:
+    def __setitem__(self, key: str, value) -> None:
         self.__dict__[key] = value
 
-class LangPosts():
+
+class LangPosts:
 '''
 Segregation language posts.  
 '''
@@ -78,5 +86,5 @@ Segregation language posts.
         return str(self.__dict__)
     def __getitem__(self, unique_id: int) -> IdWithPost:
         return self.post.index(unique_id)
-    def __setitem__(self, unique_id: int, post: Post):
+    def __setitem__(self, unique_id: int, post):
         self.posts.IdWithPost(unique_id, post))

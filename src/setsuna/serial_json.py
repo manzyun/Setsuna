@@ -20,14 +20,6 @@ obj -- Want serialize Post object.
     return re_dict
     raise TypeError(repr(obj) + ' is not JSON selializable')
 
-def with_id(self, obj: models.IdWithPost) -> dict:
-'''
-IdWithPost object to JSON object.  
-obj -- Want serialize IdWithPost object.  
-'''
-    re_dict = {'id': obj.unique_id, k:v for k, v in obj.post}
-    return re_dict
-    raise TypeError(repr(obj) + ' is not JSON selializable')
 
 def list_lang(self, obj: LangPosts) -> dict:
 '''
@@ -36,10 +28,10 @@ obj -- Want serialize LangPosts object.
 '''
     inner_list = []
     for post in obj.posts:
-        tmp = {'id': uid, k:v for k, v in data for uid, data in post}
-        
+        tmp = {k:v for k, v in post}
+
         inner_list.append(tmp)
-    
+
     re_dict = {obj.lang: inner_list}
     return re_dict
     raise TypeError(repr(obj) + ' is not JSON selializable')
