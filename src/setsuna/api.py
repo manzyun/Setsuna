@@ -65,18 +65,20 @@ Contribution
 
   {
     "content":your content here,
-    "delkey": you want delete password.
+    "password": you want delete contribution password.
+    "lang": Language code by ISO 639-2.
   }
 
-.. note:: If "delkey" is nothing then make random 4 digit password.
+.. note:: If "password" is nothing then make random 4 digit password.
 
 2. Contribute this address your JSON on POST method.
 3. 'Comming server response your contribut infomartion in "data" section::
 
   {
-    "id": Your contributon id,
+    "id": Your contribution id,
     "content": You contribute content,
-    "delkey": Delete contributon password,
+    "password": Delete contribution password,
+    "lang": Language code by ISO 639-2.
   }
 
 
@@ -84,7 +86,7 @@ Response(no_comment)
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 1. Access contribution on POST method.
-2. Comming server response your responsed contributon information in "data" section::
+2. Comming server response your responsed contribution information in "data" section::
 
   {
     "id": Your responsed contribution id,
@@ -99,19 +101,21 @@ Response(comment)
 
   {
     "content":your content here,
-    "delkey": you want delete password
+    "password": you want delete contribution password,
+    "lang": Language code by ISO 639-2.
   }
 
-.. note:: If "delkey" is nothing then make random 4 digit password.
+.. note:: If "password" is nothing then make random 4 digit password.
 
 
 2. Contribute you want response contribution address on POST method
 3. Comming server response your contribution information in "data" section::
 
   {
-    "id": Your contributon id,
+    "id": Your contribution id,
     "content": You contribute content,
-    "delkey": Delete contributon password,
+    "password": Delete contribution password,
+    "lang": Language code by ISO 639-2.
   }
 
 
@@ -121,7 +125,7 @@ Delete Contribution
 1. Make JSON::
 
   {
-    "delkey": your contribution has delete password.
+    "password": your contribution has delete password.
   }
 
 
@@ -258,10 +262,10 @@ def delete_post(unique_id):
         if not Request.get_json(request):
             req = request.get_json(request)
             post = models.Post(unique_id=unique_id)
-            if not 'delkey' in req:
+            if not 'password' in req:
                 abort(400)
 
-            if post.delete(request.json['delkey']):
+            if post.delete(request.json['password']):
                 return json.dumps({'result': True})
             else:
                 return json.dumps({'result': False, 'message': 'Not matching password.'})
@@ -278,7 +282,7 @@ def post_content():
 
     post = models.Post()
     post.content = req['content']
-    post.delkey = req['delkey'] if 'delkey' in req else make_delkey()
+    post.password = req['password'] if 'password' in req else make_password()
     result = post.post()
 
     # Create response data.
@@ -287,7 +291,7 @@ def post_content():
     return json.dumps(res)
 
 
-def make_delkey(length=6):
+def make_password(length=6):
     # Make font map
     alphabets = []
     codes = (('a', 'z'), ('A', 'Z'), ('0', '9'))
@@ -296,6 +300,6 @@ def make_delkey(length=6):
         alphabets.extend(chars)
 
         password = [random.choice(alphabets) for _ in range(length)]
-        delkey = ''.join(password)
+        password = ''.join(password)
 
-        return delkey
+        return password
