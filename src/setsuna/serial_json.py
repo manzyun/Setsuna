@@ -18,8 +18,6 @@ obj -- Want serialize Post object.
 '''
     isinstance(obj, models.LangPosts):
         re_dict = {k:v for k, v in obj}
-        re_dict['id'] = re_dict['uid']
-        del re_dict['uid']
         return re_dict
     raise TypeError(repr(obj) + ' is not JSON selializable')
 
@@ -32,5 +30,5 @@ JSON data to Post object.
 json -- json data
 '''
     tmp_dic = json.load(json_obj)
-    re_post = models.Post(tmp_dic['id'], tmp_dic['content'], tmp_dic['limit'], tmp_dic['password'], tmp_dic['lang'])
+    re_post = models.Post(tmp_dic['content'], tmp_dic['limit'], tmp_dic['password'], tmp_dic['lang'])
     return re_post

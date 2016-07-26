@@ -9,20 +9,21 @@ class Post:
 '''
 Base post class.  
 
+uid -- identity key from DB.  
 content -- Post content.  
 limit -- Delete time. Record style is Unix time.  
 password -- Password for manually delete.
+lang -- Language code by ISO 639-2.  
 '''
-    def __init__(self,uid: int, content: str, limit: int, password: str, lang: str) -> None:
+    def __init__(self, content: str, limit: int, password: str, lang: str) -> None:
     '''
     Make post.  
-    uid -- Unique ID.  
+
     content -- Post content.  
     limit -- Delete time. Record style is Unix time.  
     password -- Password for manually delete.  
     lang -- Language code by ISO 639-2.  
     '''
-        self.id = uid
         self.content = content
         self.limit = limit
         self.password = password
@@ -37,15 +38,29 @@ password -- Password for manually delete.
         return self.__dict__[key]
     def __setitem__(self, key: str, value) -> None:
         self.__dict__[key] = value
+    def add_id(self, uid: int) -> None:
+    '''
+    Append identity key.
+    uid -- identity key from DB
+    '''
+        self.id = uid
 
 
 class ResponsePost(Post):
 '''
 Response post class.  
+
+link -- Link post ID.  
+uid -- identity key from DB.  
+content -- Post content.  
+limit -- Delete time. Record style is Unix time.  
+password -- Password for manually delete.
+lang -- Language code by ISO 639-2.  
 '''
-    def __init__(self, link: int, uid: int, content: str, limit: int, password: str, lang: str) -> None:
+    def __init__(self, link: int, content: str, limit: int, password: str, lang: str) -> None:
     '''
     Make response post.  
+
     link -- Link post ID.  
     uid -- Unique ID.  
     content -- Post content.  
@@ -54,7 +69,7 @@ Response post class.
     lang -- Language code by ISO 639-2.  
     '''
         self.link = link 
-        Post.__init__(uid, content, limit, password, lang)
+        Post.__init__(content, limit, password, lang)
     def __str__(self) -> str:
         return str(self.__dict__)
     def __repr__(self) -> str:
