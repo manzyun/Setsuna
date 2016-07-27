@@ -6,7 +6,6 @@ from flask import abort, jsonify, Request, request, Response
 from bson import objectid
 import random
 
-client = MongoClient()
 ISODatetime = '%Y-%M-%dT%H:%M%z'
 
 
@@ -35,8 +34,10 @@ def know_post(unique_id):
 
 @app.route('/', methods=['GET'])
 def index():
-    return 
-
+    re_text = ''
+    with open('./readme.rst', encoding='utf-8') as readme:
+         re_text = readme.read()
+    return re_text
 
 def make_template(json_id=1) -> str:
     data = {
