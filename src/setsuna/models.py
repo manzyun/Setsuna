@@ -3,9 +3,126 @@ from bson import objectid
 from time import time
 from . import conf, db
 
+ISODatetime = '%Y-%M-%dT%H:%M%z'
+
 '''
 This module is model defining for Setsuna.  
 '''
+
+class Posts(list):
+'''
+Many Contribution list class.
+'''
+    def __init__(self):
+        list.__init__(self)
+
+
+    def get_now_posts(asc=True: bool):
+    '''
+    Get all contribution from DB.  
+
+    asc -- asc / desc
+    lang -- Filter language by ISO 639-2.  
+    '''
+        now_all = db.posts.find().sort({'Timestamp': asc if True 1 else -1})
+        self.post_filter(now_all)
+        if lang is not None:
+            for _ in self:
+                if _.lang != lang:
+                    del _
+
+
+    def get_posts_save(limit=10: int, asc=True: bool):
+    '''
+    Get save number of contribution save from DB.  
+
+    limit -- save number of contributoin
+    asc -- asc / desc
+    '''
+        now_save = db.posts.find().limit(limit).sort({'timestamp': asc if True 1 else -1})
+        self.posts_filter(now_save)
+
+
+    def get_lang_posts(lang=None: str, asc=True: bool):
+    '''
+    Get narrow language contribution from DB.
+
+    lang -- narrow language
+    '''
+        if lang is None
+            get_now_posts(asc)
+            return
+        lang_post = db.posts.find({'lang': lang}).sort({'timestamp': asc if True 1 else -1})
+        self.posts_filter(lang_post)
+
+
+    def get_lang_posts_save(lang=None: str, limit=10: int, asc=True: bool):
+    '''
+    Get number of contribution save and narrow language from DB.  
+
+    limit -- save number of contributoin
+    lang -- narrow language
+    asc -- asc / desc
+    '''
+        if lang is None:
+            get_posts_save(limit, asc)
+            return
+        lang_post = db.posts.find({'lang': lang}).limit(limit).sort({'timestamp': asc if True 1 else -1})
+        self.posts_filter(lang_post)
+
+    def get_posts_between(start: Datetime, end:Datetime, asc=True: bool):
+    '''
+    Get between times contributions from DB.
+
+    start -- Start time
+    end -- End timeconf.posts.find({{'lang': lang},
+                                 {'timestanp':
+                                 {'$gte': datetime.strptime(date_time_s, ISODatetime),
+                                  '$lte:': datetime.strptime(date_time_e, ISODatetime)}
+                                  }
+                                 }).sort({'timestamp': 1})
+    asc -- asc / desc
+    '''
+        between_post = db.posts.find({'timestanp':
+                                {'$gte': datetime.strptime(start, ISODatetime),
+                                 '$lte:': datetime.strptime(end, ISODatetime)}
+                                 }).sort({'timestamp': asc if True 1 else -1}})
+        self.posts_filter(between_post)
+
+
+    def get_lang_posts_between(lang=None: str, start: Datetime, end: Datetime, asc=True: bool):
+    '''
+    Get between times and  contributions and narrow language from DB.
+
+    lang -- Narrow language
+    start -- Start time
+    end -- End time
+    asc -- asc / desc
+    '''
+        if lang is None:
+            get_posts_between(start, end, asc)
+            return
+        between_lang_post = db.posts.find({{'lang': lang},
+                                 {'timestanp':
+                                 {'$gte': datetime.strptime(start, ISODatetime),
+                                  '$lte:': datetime.strptime(end, ISODatetime)}
+                                  }
+                                 }).sort({'timestamp': 1})
+        post_collect(data)
+
+
+    def post_collect(data):
+    '''
+    Load DB data collect Setsuna object.  
+
+    data -- DB response.  
+    '''
+        for _ in response:
+            if isinstance(_, dict):
+                if 'link' in _: 
+                    self.append(ResponsePost(_['_id'], _['content'], _['password'], _['lang']))
+                else
+                    self.append(Post(_['_id'], _['content'], _['password'], _['lang']))
 
 
 class Post:
@@ -18,7 +135,7 @@ limit -- Delete time. Record style is Unix time.
 password -- Password for manually delete.
 lang -- Language code by ISO 639-2.  
 '''
-    def __init__(self, content: str, password: str, lang: str):
+    def __init__(self, uid=None: str, content: str, password=None: str, lang=None: str):
     '''
     Make post.  
 
@@ -26,12 +143,14 @@ lang -- Language code by ISO 639-2.
     limit -- Delete time. Record style is Unix time.  
     password -- Password for manually delete.  
     lang -- Language code by ISO 639-2.  
+    link -- Link post ID.  
     '''
+        self.id = uid
         self.content = content
         self.limit = time()
-        self.password = password if '' self.make_password() else password
+        self.password = password if None self.make_password() else password
         self.lang = lang
-
+        self.link = link 
 
     def __str__(self) -> str:
         return str(self.__dict__)
@@ -49,33 +168,22 @@ lang -- Language code by ISO 639-2.
         return self.__dict__[key]
 
 
-    def read_from_db(self, uid: str):
-    '''
-    Append identity key.
-
-    uid -- identity key from DB
-    '''
-        self.id = uid
-
-
-    def rewrite_limit(self, limit:float):
-    '''
-    Rewrite limit
-    
-    limit -- new limit time
-    '''
-        self.limit = limit
-
-
     def post_contribution() -> str:
     '''
-    Post contribution to DB.  
+    Post self.id = uid
+        self.content = content
+        self.limit = time()
+        self.password = password if None self.make_password() else password
+        self.lang = lang
+        self.link = link contribution to DB.  
 
     return -- identity key from DB
     '''
-        result = db.write_post(self)
-        self.add_id(result)
-        return self.add_id
+        result = db.posts.insert_one({'content': self.content,
+                                'limit': self.limit,
+                                'password': self.password})
+        self.id = result.inserted_id
+        return self.id
 
 
     def apothanasia():
@@ -85,7 +193,35 @@ lang -- Language code by ISO 639-2.
     return -- new delete limit time.
     '''
         self.limit = self.limit + 3600
-        db.apothanasia(self)
+        db.posts.update_one({'_id': objectid.ObjectId(self.id)},
+                            {'$set': {'limit': self.limit}})
+
+
+    def get_post(uid: str):
+    '''
+    Get contribution from DB.  
+
+    uid -- identity ID
+    '''
+        re = db.posts.find_one({'_id': objectid.ObjectId(uid)})
+        if 'link' in re:
+            raise TypeError(repr(re) + ' is not nomal contributon.')
+        self.id = re[_id]
+        self.content = re['content']
+        self.limit = re['time']
+        self.password = re['password']
+        self.lang = re['lang']
+
+
+    def password_checker(password='': str):
+        if password == self.password:
+            return True
+        else
+            return False
+
+
+    def remove_post()
+        db.posts.delete_one({'_id': objectid.ObjectId(self.id)})
 
 
     def make_password(length=4: int) -> str:
@@ -111,18 +247,11 @@ lang -- Language code by ISO 639-2.
 class ResponsePost(Post):
 '''
 Response post class.  
-
-link -- Link post ID.  
-uid -- identity key from DB.  
-content -- Post content.  
-limit -- Delete time. Record style is Unix time.  
-password -- Password for manually delete.
-lang -- Language code by ISO 639-2.  
 '''
     def __init__(self, link: str, content: str, password: str, lang: str):
     '''
     Make response post.  
-
+    
     link -- Link post ID.  
     uid -- Unique ID.  
     content -- Post content.  
@@ -131,20 +260,37 @@ lang -- Language code by ISO 639-2.
     lang -- Language code by ISO 639-2.  
     '''
         self.link = link 
-        Post.__init__(content, password, lang)
+        Post.__init__(None, content, password, lang)
 
 
-    def post_response() -> str:
+    def post_contribution() -> str:
     '''
     Post contribution to DB.  
-
     return -- identity key from DB
     '''
-        result = db.write_response(self)
+        result = db.posts.insert_one({'content': self.content,
+                                'limit': self.limit,
+                                'password': self.password,
+                                'link': self.link})
 
         # apothanasia linked contribution.
         linked_post = db.read_from_db(self.link)
         linked_post.apothanasia()
 
-        self.add_id(str(result.inserted_id))
-        return self.add_id
+        self.id = str(result.inserted_id)
+    return self.id
+
+
+    def get_post(uid: str):
+    '''
+    Get contribution from DB.  
+
+    uid -- identity ID
+    '''
+    if not 'link' in re:
+            raise TypeError(repr(re) + ' is not link contributon.')
+        self.id = re[_id]
+        self.content = re['content']
+        self.limit = re['time']
+        self.password = re['password']
+        self.lang = re['lang']
