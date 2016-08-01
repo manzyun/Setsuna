@@ -75,14 +75,10 @@ Many Contribution list class.
     Get between times contributions from DB.
 
     start -- Start time
-    end -- End timeconf.posts.find({{'lang': lang},
-                                 {'timestanp':
-                                 {'$gte': datetime.strptime(date_time_s, ISODatetime),
-                                  '$lte:': datetime.strptime(date_time_e, ISODatetime)}
-                                  }
-                                 }).sort({'timestamp': 1})
+    end -- End time
     asc -- asc / desc
     '''
+
         between_post = db.posts.find({'timestanp':
                                 {'$gte': datetime.strptime(start, ISODatetime),
                                  '$lte:': datetime.strptime(end, ISODatetime)}
@@ -120,10 +116,24 @@ Many Contribution list class.
         for _ in response:
             if isinstance(_, dict):
                 if 'link' in _: 
-                    self.append(ResponsePost(_['_id'], _['content'], _['password'], _['lang']))
+                    self.append(ResponsePost(_['link'],_['_id'], _['content'], _['password'], _['lang']))
                 else
                     self.append(Post(_['_id'], _['content'], _['password'], _['lang']))
 
+
+def PostFactory(uid):
+'''
+Make Post or ResponsePost class from DB data.
+
+uid -- Identity key in DB.  
+'''
+    re_post = None
+    db_res = db.posts.find_one({'_id': uid})
+    if 'link' in db_res:
+        re_post = ResponsePost(db_res['_id'], db_res['link'], db_res['content'], db_res['password'], db_res['lang'])
+    else:
+        re_post = Post(db_res['_id'], db_res['content'], db_res['password'], db_res['lang'])
+    return re_post.get(re_post.id)
 
 class Post:
 '''
@@ -214,13 +224,21 @@ lang -- Language code by ISO 639-2.
 
 
     def password_checker(password='': str):
+    '''
+    Password checker
+    
+    password -- Sample password
+    '''
         if password == self.password:
             return True
         else
             return False
 
 
-    def remove_post()
+    def delete_post():
+    '''
+    Delete Contribution from DB.  
+    '''
         db.posts.delete_one({'_id': objectid.ObjectId(self.id)})
 
 
@@ -247,11 +265,18 @@ lang -- Language code by ISO 639-2.
 class ResponsePost(Post):
 '''
 Response post class.  
+
+link -- Link post ID.  
+uid -- identity key from DB.  
+content -- Post content.  
+limit -- Delete time. Record style is Unix time.  
+password -- Password for manually delete.
+lang -- Language code by ISO 639-2.  
 '''
-    def __init__(self, link: str, content: str, password: str, lang: str):
+    def __init__(self, uid=None: str, link: str, content: str, password=None: str, lang=None: str):
     '''
     Make response post.  
-    
+
     link -- Link post ID.  
     uid -- Unique ID.  
     content -- Post content.  
@@ -260,12 +285,13 @@ Response post class.
     lang -- Language code by ISO 639-2.  
     '''
         self.link = link 
-        Post.__init__(None, content, password, lang)
+        Post.__init__(uid, content, password, lang)
 
 
     def post_contribution() -> str:
     '''
     Post contribution to DB.  
+
     return -- identity key from DB
     '''
         result = db.posts.insert_one({'content': self.content,
