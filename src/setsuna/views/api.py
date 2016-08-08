@@ -1,6 +1,6 @@
 import json
 from .. import app
-from ..models import post_factory, Post, ResponsePost, Posts
+from .. models import post_factory, post, response_post, posts
 from flask import abort, Request, request, Response
 
 
