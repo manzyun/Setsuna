@@ -1,24 +1,23 @@
 import json
-from datetime import datetime
 from .. import app
-from ..models import post_factory, serial_json
-from flask import abort, jsonify, Request, request, Response
+from ..models import post_factory, Post, ResponsePost, Posts
+from flask import abort, Request, request, Response
 
 
 _err_dict = {'errors':[]}
 
 @app.errorhandler(123)
-def too_short:
+def too_short():
     err_obj = _err_dict['errors'].append({'status':'123',
-                                'title': 'Value too short'},
+                                'title': 'Value too short',
                                 'detail': 'It''s too short content...'})
     return Response(json.dumps(err_obj), 123)
 
 
 @app.errorhandler(226)
-def password_not_match:
+def password_not_match():
     err_obj = _err_dict['errors'].append({'status':'226',
-                                'title': 'Passwords do not match'},
+                                'title': 'Passwords do not match',
                                 'detail': 'Are you really this contribution post ?'})
     return Response(json.dumps(err_obj), 226)
 
@@ -26,7 +25,7 @@ def password_not_match:
 @app.errorhandler(400)
 def bad_request(error):
     err_obj = _err_dict['errors'].append({'status':'400',
-                                'title': 'Bad Request'},
+                                'title': 'Bad Request',
                                 'detail': 'Sorry, I can not get request.'})
     return Response(json.dumps(err_obj), 400)
 
@@ -34,7 +33,7 @@ def bad_request(error):
 @app.errorhandler(404)
 def not_found(error):
     err_obj = _err_dict['errors'].append({'status':'400',
-                            'title': 'Not Found'},
+                            'title': 'Not Found',
                             'detail': 'This post was deleted maybe.'})
     return Response(json.dumps(err_obj), 404)
 
@@ -42,7 +41,7 @@ def not_found(error):
 @app.errorhandler(500)
 def internal_error(error):
     err_obj = _err_dict['errors'].append({'status':'500',
-                            'title': 'Internal Server Error'},
+                            'title': 'Internal Server Error',
                             'detail': 'Sorry, Internal server error...'})
     return Response(json.dumps(err_obj), 500)
 
@@ -65,7 +64,7 @@ def index():
 
 @app.route('/api/posts', methods=['GET'])
 def get_posts():
-    posts = models.Posts()
+    posts = Posts()
     posts.get_now_posts
 
     return Response(json.dumps(posts), 200)
@@ -73,7 +72,7 @@ def get_posts():
 
 @app.route('/api/posts/limit/<int:limit>', methods=['GET'])
 def get_posts_limit(limit: int):
-    posts = models.Posts()
+    posts = Posts()
     posts.get_posts_save(limit)
 
     return Response(json.dumps(posts), 200)
@@ -81,7 +80,7 @@ def get_posts_limit(limit: int):
 
 @app.route('/api/posts/start/<datetime_s>/end/<datetime_e>', methods=['GET'])
 def get_posts_ontime(datetime_s: str, datetime_e: str):
-    posts = models.Posts()
+    posts = Posts()
     posts.get_posts_between(datetime_s, datetime_e)
 
     return Response(json.dumps(posts), 200)
@@ -89,7 +88,7 @@ def get_posts_ontime(datetime_s: str, datetime_e: str):
 
 @app.route('/api/<lang>/posts', methods=['GET'])
 def get_posts_lang(lang: str):
-    posts = models.Posts()
+    posts = Posts()
     posts.get_lang_posts(lang)
 
     return Response(json.dumps(posts), 200)
@@ -97,7 +96,7 @@ def get_posts_lang(lang: str):
 
 @app.route('/api/<lang>/posts/start/<datetime_s>/end/<datetime_e>', methods=['GET'])
 def get_posts_lang_ontime(lang: str, datetime_s: str, datetime_e: str):
-    posts = models.Posts()
+    posts = Posts()
     posts.get_lang_posts_between
 
     return Response(json.dumps(posts), 200)
@@ -105,10 +104,10 @@ def get_posts_lang_ontime(lang: str, datetime_s: str, datetime_e: str):
 
 @app.route('/api/post/<uid>', methods=['GET'])
 def get_post(uid: str):
-    post = models.Post()
+    post = Post()
     post.getPost(uid)
 
-    return Resonse(json.dumps(post), 200)
+    return Response(json.dumps(post), 200)
 
 
 @app.route('/api/', methods=['POST'])
@@ -124,9 +123,9 @@ def post_content():
     if len(req['content']) <= 0:
         abort(123)
 
-    post = models.Post(content=req['content'],
-                        password=req['password'] if '' None,
-                        lang=req['lang'] if '' None)
+    post = Post(content=req['content'],
+                password=None if '' else req['password'],
+                lang=None if '' else req['lang'])
     post.post_content()
     
     return Response(json.dumps(post), 200)
@@ -136,8 +135,11 @@ def res_post(uid: str):
     if know_post(uid):
         if not Request.get_json(request):
             abort(400)
-            
-        post = models.ResponsePost(link=uid, content=req['content'], password=req['password'] if '' None, lang=req['rang'] if '' None)
+
+        req = Request.get_json(request)
+        post = ResponsePost(link=uid, content=req['content'],
+                            password=None if '' else req['password'] ,
+                            lang=None if '' else req['rang'])
         post.post_contribution()
 
         return Response(json.dumps(post), 200)
@@ -147,11 +149,12 @@ def res_post(uid: str):
 def delete_post(uid):
     if know_post(uid):
         if not Request.get_json(request):
+            req = Request.get_Json(request)
             if not 'password' in req:
                 abort(400)
 
         req = Request.get_json(request)
-        post = models.PostFactory(uid)
+        post = post_factory(uid)
         if not post.password_checker(req['password']):
             abort(123)
         else:

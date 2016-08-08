@@ -1,6 +1,3 @@
-import typing
-from bson import objectid
-
 _DATE_FORMAT = '%y-%m-%dT%H-%M-%S' # ISO 8601
 
 # _LANG_LIST base is ISO 639-3

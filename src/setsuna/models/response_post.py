@@ -1,43 +1,40 @@
-import typing
-from bson import objectid
-from time import time
+from . import post
 from .. import conf as db
-from . import post, response_post
+from bson import objectid
 
-
-class ResponsePost(Post):
-'''
-Response post class.  
-
-link -- Link post ID.  
-uid -- identity key from DB.  
-content -- Post content.  
-limit -- Delete time. Record style is Unix time.  
-password -- Password for manually delete.
-lang -- Language code by ISO 639-2.  
-'''
-    def __init__(self, uid=None: str, link: str, content: str, password=None: str, lang=None: str):
+class ResponsePost(post.Post):
     '''
-    Make response post.  
+    Response post class.  
 
     link -- Link post ID.  
-    uid -- Unique ID.  
+    uid -- identity key from DB.  
     content -- Post content.  
     limit -- Delete time. Record style is Unix time.  
-    password -- Password for manually delete.  
+    password -- Password for manually delete.
     lang -- Language code by ISO 639-2.  
-    link -- Response to.  
     '''
+    def __init__(self, uid: str, link: str, content: str, password: str, lang: str):
+        '''
+        Make response post.  
+
+        link -- Link post ID.  
+        uid -- Unique ID.  
+        content -- Post content.  
+        limit -- Delete time. Record style is Unix time.  
+        password -- Password for manually delete.  
+        lang -- Language code by ISO 639-2.  
+        link -- Response to.  
+        '''
         self.link = link 
-        Post.__init__(uid, content, password, lang)
+        post.Post.__init__(uid, content, password, lang)
 
 
-    def post_contribution() -> str:
-    '''
-    Post contribution to DB.  
+    def post_contribution(self) -> str:
+        '''
+        Post contribution to DB.  
 
-    return -- identity key from DB
-    '''
+        return -- identity key from DB
+        '''
         result = db.posts.insert_one({'content': self.content,
                                 'limit': self.limit,
                                 'password': self.password,
@@ -48,18 +45,20 @@ lang -- Language code by ISO 639-2.
         linked_post.apothanasia()
 
         self.id = str(result.inserted_id)
-    return self.id
+        return self.id
 
 
-    def get_post(uid: str):
-    '''
-    Get contribution from DB.  
+    def get_post(self, uid: str):
+        '''
+        Get contribution from DB.  
 
-    uid -- identity ID
-    '''
-    if not 'link' in re:
+        uid -- identity ID
+        '''
+        re = db.posts.find_one({'_id': objectid.ObjectId(uid)})
+
+        if not 'link' in re:
             raise TypeError(repr(re) + ' is not link contributon.')
-        self.id = re[_id]
+        self.id = re['_id']
         self.content = re['content']
         self.limit = re['time']
         self.password = re['password']

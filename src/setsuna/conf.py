@@ -12,4 +12,4 @@ connect = MongoClient(conf['address'], port_number)
 posts = connect[conf['database']][conf['collection']]
 
 # Setsuna configp
-life = int(config['life'])
+life = int(conf['life'])
