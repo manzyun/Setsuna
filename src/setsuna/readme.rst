@@ -33,13 +33,13 @@ Contribution
 .. note:: If "password" is empty then make random 4 digit password.
 
 2. Contribute this address your JSON on POST method.
-3. 'Comming server response your contribut infomartion in "data" section::
+3. 'Comming server response::
 
   {
     "id": Your contribution id,
     "content": You contribute content,
     "password": Delete contribution password,
-    "lang": Language code by ISO 639-2.
+    "lang": Language code by ISO 639-3.
   }
 
 
@@ -47,7 +47,7 @@ Response(no comment)
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 1. Access contribution on POST method.
-2. Comming server response your responsed contribution information in "data" section::
+2. Comming server response::
 
   {
     "id": Your responsed contribution id,
@@ -58,25 +58,26 @@ Response(no comment)
 Response(comment)
 ~~~~~~~~~~~~~~~~~~~~
 
-1. Make JSON::
+2. Make JSON::
 
   {
     "content":your content here,
     "password": you want delete contribution password,
-    "lang": Language code by ISO 639-2.
+    "lang": Language code by ISO 639-3.
   }
 
 .. note:: If "password" is nothing then make random 4 digit password.
 
 
 2. Contribute you want response contribution address on POST method
-3. Comming server response your contribution information in "data" section::
+3. Comming server response::
 
   {
     "id": Your contribution id,
     "content": You contribute content,
     "password": Delete contribution password,
-    "lang": Language code by ISO 639-2.
+    "lang": Language code by ISO 639-3.
+    "link": Your response contribution id.
   }
 
 
@@ -91,14 +92,12 @@ Delete Contribution
 
 
 2. Contribute this address your JSON on DELETE method.
-3. 'Comming server response your contribute infomartion in "data" section::
+3. 'Comming server response::
 
   {
     "message": "Your post deleted ;)"
   }
 
-
-.. note:: If contribution has response then delete with responsed contribution.
 
 FAQ
 -----

@@ -1,9 +1,55 @@
 import random
-from time import time
+import time
 from .. import conf as db
 from .. import conf
 from bson import objectid
 
+# _LANG_LIST base is ISO 639-3
+_LANG_LIST = {'aar', 'abk', 'ace', 'ach', 'ada', 'ady', 'afh', 'afr', 'ain',
+            'aka', 'akk', 'ale', 'alt', 'amh', 'ang', 'anp', 'ara', 'arc', 'arg',
+            'arn', 'arp', 'arw', 'asm', 'ast', 'ava', 'ave', 'awa', 'aym', 'aze',
+            'bak', 'bal', 'bam', 'ban', 'bas', 'bej', 'bel', 'bem', 'ben', 'bho',
+            'bik', 'bin', 'bis', 'bla', 'bod', 'bod', 'bos', 'bra', 'bre', 'bua',
+            'bug', 'bul', 'byn', 'cad', 'car', 'cat', 'ceb', 'ces', 'ces', 'cha',
+            'chb', 'che', 'chg', 'chk', 'chm', 'chn', 'cho', 'chp', 'chr', 'chu',
+            'chv', 'chy', 'cop', 'cor', 'cos', 'cre', 'crh', 'csb', 'cym', 'cym',
+            'dak', 'dan', 'dar', 'del', 'den', 'deu', 'deu', 'dgr', 'din', 'div',
+            'doi', 'dsb', 'dua', 'dum', 'dyu', 'dzo', 'efi', 'egy', 'eka', 'ell',
+            'ell', 'elx', 'eng', 'enm', 'epo', 'est', 'eus', 'eus', 'ewe', 'ewo',
+            'fan', 'fao', 'fas', 'fas', 'fat', 'fij', 'fil', 'fin', 'fon', 'fra',
+            'fra', 'frm', 'fro', 'frr', 'frs', 'fry', 'ful', 'fur', 'gaa', 'gay',
+            'gba', 'gez', 'gil', 'gla', 'gle', 'glg', 'glv', 'gmh', 'goh', 'gon',
+            'gor', 'got', 'grb', 'grc', 'grn', 'gsw', 'guj', 'gwi', 'hai', 'hat',
+            'hau', 'haw', 'heb', 'her', 'hil', 'hin', 'hit', 'hmn', 'hmo', 'hrv',
+            'hsb', 'hun', 'hup', 'hye', 'hye', 'iba', 'ibo', 'ido', 'iii', 'iku',
+            'ile', 'ilo', 'ina', 'ind', 'inh', 'ipk', 'isl', 'isl', 'ita', 'jav', 
+            'jbo', 'jpn', 'jpr', 'jrb', 'kaa', 'kab', 'kac', 'kal', 'kam', 'kan',
+            'kas', 'kat', 'kat', 'kau', 'kaw', 'kaz', 'kbd', 'kha', 'khm', 'kho', 
+            'kik', 'kin', 'kir', 'kmb', 'kok', 'kom', 'kon', 'kor', 'kos', 'kpe',
+            'krc', 'krl', 'kru', 'kua', 'kum', 'kur', 'kut', 'lad', 'lah', 'lam',
+            'lao', 'lat', 'lav', 'lez', 'lim', 'lin', 'lit', 'lol', 'loz', 'ltz',
+            'lua', 'lub', 'lug', 'lui', 'lun', 'luo', 'lus', 'mad', 'mag', 'mah',
+            'mai', 'mak', 'mal', 'man', 'mar', 'mas', 'mdf', 'mdr', 'men', 'mga',
+            'mic', 'min', 'mis', 'mkd', 'mkd', 'mlg', 'mlt', 'mnc', 'mni', 'moh',
+            'mon', 'mos', 'mri', 'mri', 'msa', 'msa', 'mul', 'mus', 'mwl', 'mwr',
+            'mya', 'mya', 'myv', 'nap', 'nau', 'nav', 'nbl', 'nde', 'ndo', 'nds',
+            'nep', 'new', 'nia', 'niu', 'nld', 'nld', 'nno', 'nob', 'nog', 'non',
+            'nor', 'nqo', 'nso', 'nwc', 'nya', 'nym', 'nyn', 'nyo', 'nzi', 'oci',
+            'oji', 'ori', 'orm', 'osa', 'oss', 'ota', 'pag', 'pal', 'pam', 'pan',
+            'pap', 'pau', 'peo', 'phn', 'pli', 'pol', 'pon', 'por', 'pro', 'pus',
+            'qaa-qtz', 'que', 'raj', 'rap', 'rar', 'roh', 'rom', 'ron', 'ron', 'run',
+            'rup', 'rus', 'sad', 'sag', 'sah', 'sam', 'san', 'sas', 'sat', 'scn',
+            'sco', 'sel', 'sga', 'shn', 'sid', 'sin', 'slk', 'slk', 'slv', 'sma',
+            'sme', 'smj', 'smn', 'smo', 'sms', 'sna', 'snd', 'snk', 'sog', 'som',
+            'sot', 'spa', 'sqi', 'sqi', 'srd', 'srn', 'srp', 'srr', 'ssw', 'suk',
+            'sun', 'sus', 'sux', 'swa', 'swe', 'syc', 'syr', 'tah', 'tam', 'tat',
+            'tel', 'tem', 'ter', 'tet', 'tgk', 'tgl', 'tha', 'tig', 'tir', 'tiv',
+            'tkl', 'tlh', 'tli', 'tmh', 'tog', 'ton', 'tpi', 'tsi', 'tsn', 'tso',
+            'tuk', 'tum', 'tur', 'tvl', 'twi', 'tyv', 'udm', 'uga', 'uig', 'ukr',
+            'umb', 'und', 'urd', 'uzb', 'vai', 'ven', 'vie', 'vol', 'vot', 'wal',
+            'war', 'was', 'wln', 'wol', 'xal', 'xho', 'yao', 'yap', 'yid', 'yor',
+            'zap', 'zbl', 'zen', 'zha', 'zho', 'zho', 'zul', 'zun', 'zxx', 'zza',
+}
 
 class Post:
     '''
@@ -15,7 +61,7 @@ class Post:
     password -- Password for manually delete.
     lang -- Language code by ISO 639-3.  
     '''
-    def __init__(self, uid: str, content: str, password: str, lang: str):
+    def __init__(self, content: str, password: str, lang: str):
         '''
         Make post.  
 
@@ -24,7 +70,6 @@ class Post:
         password -- Password for manually delete.  
         lang -- Language code by ISO 639-3.  
         '''
-        self.id = uid
         self.content = content
         self.limit = int(time.time()) + 3600 * conf.life
         self.password = self.make_password() if '' else password
