@@ -6,21 +6,6 @@ from flask import abort, Request, request, Response
 
 _err_dict = {'errors':[]}
 
-@app.errorhandler(123)
-def too_short():
-    err_obj = _err_dict['errors'].append({'status':'123',
-                                'title': 'Value too short',
-                                'detail': 'It''s too short content...'})
-    return Response(json.dumps(err_obj), 123)
-
-
-@app.errorhandler(226)
-def password_not_match():
-    err_obj = _err_dict['errors'].append({'status':'226',
-                                'title': 'Passwords do not match',
-                                'detail': 'Are you really this contribution post ?'})
-    return Response(json.dumps(err_obj), 226)
-
 
 @app.errorhandler(400)
 def bad_request(error):
@@ -30,10 +15,26 @@ def bad_request(error):
     return Response(json.dumps(err_obj), 400)
 
 
+@app.errorhandler(401)
+def password_not_match():
+    err_obj = _err_dict['errors'].append({'status':'401',
+                                'title': 'Passwords do not match',
+                                'detail': 'Are you really this contribution post ?'})
+    return Response(json.dumps(err_obj), 226)
+
+
 @app.errorhandler(404)
 def not_found(error):
     err_obj = _err_dict['errors'].append({'status':'400',
                             'title': 'Not Found',
+                            'detail': 'Your request page is not found.'})
+    return Response(json.dumps(err_obj), 404)
+
+
+@app.errorhandler(410)
+def not_found(error):
+    err_obj = _err_dict['errors'].append({'status':'410',
+                            'title': 'Gone',
                             'detail': 'This post was deleted maybe.'})
     return Response(json.dumps(err_obj), 404)
 
@@ -56,8 +57,7 @@ def know_post(uid):
 
 @app.route('/', methods=['GET'])
 def index():
-    re_text = ''
-    with open('./readme.rst', encoding='utf-8') as readme:
+    with open('setsuna/readme.rst', encoding='utf-8') as readme:
          re_text = readme.read()
     return re_text
 
