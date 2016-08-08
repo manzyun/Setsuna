@@ -1,8 +1,8 @@
+import random
 from time import time
 from .. import conf as db
 from .. import conf
 from bson import objectid
-from math import random
 
 
 class Post:
