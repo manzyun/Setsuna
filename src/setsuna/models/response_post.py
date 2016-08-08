@@ -26,6 +26,7 @@ lang -- Language code by ISO 639-2.
     limit -- Delete time. Record style is Unix time.  
     password -- Password for manually delete.  
     lang -- Language code by ISO 639-2.  
+    link -- Response to.  
     '''
         self.link = link 
         Post.__init__(uid, content, password, lang)

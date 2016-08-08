@@ -10,3 +10,6 @@ port_number = int(conf['port'])
 # DB Connection
 connect = MongoClient(conf['address'], port_number)
 posts = connect[conf['database']][conf['collection']]
+
+# Setsuna configp
+life = int(config['life'])

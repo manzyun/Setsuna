@@ -1,8 +1,6 @@
-import typing
 from bson import objectid
 from time import time
 from .. import conf
-
 
 class Post:
 '''
@@ -12,7 +10,7 @@ uid -- identity key from DB.
 content -- Post content.  
 limit -- Delete time. Record style is Unix time.  
 password -- Password for manually delete.
-lang -- Language code by ISO 639-2.  
+lang -- Language code by ISO 639-3.  
 '''
     def __init__(self, uid=None: str, content: str, password=None: str, lang=None: str):
     '''
@@ -21,45 +19,26 @@ lang -- Language code by ISO 639-2.
     content -- Post content.  
     limit -- Delete time. Record style is Unix time.  
     password -- Password for manually delete.  
-    lang -- Language code by ISO 639-2.  
-    link -- Link post ID.  
+    lang -- Language code by ISO 639-3.  
     '''
         self.id = uid
         self.content = content
-        self.limit = time()
+        self.limit = int(time.time()) + 3600 * conf.life
         self.password = password if None self.make_password() else password
-        self.lang = lang if None 'und' else lang
-
-    def __str__(self) -> str:
-        return str(self.__dict__)
-
-
-    def __repr__(self) -> str:
-        return str(self.__dict__)
-
-
-    def __iter__(self):
-        return self.__dict__.iteritems()
-
-
-    def __getitem__(self, key: str):
-        return self.__dict__[key]
+        self.lang = lang if None or not lang in _LANG_LIST 'und' else lang
 
 
     def post_contribution() -> str:
     '''
-    Post self.id = uid
-        self.content = content
-        self.limit = time()
-        self.password = password if None self.make_password() else password
-        self.lang = lang
-        self.link = link contribution to DB.  
+    Post contribution.
 
     return -- identity key from DB
     '''
         result = db.posts.insert_one({'content': self.content,
                                 'limit': self.limit,
-                                'password': self.password})
+                                'password': self.password
+                                'lang': self.lang
+                                })
         self.id = result.inserted_id
         return self.id
 

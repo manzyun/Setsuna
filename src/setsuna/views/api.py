@@ -1,4 +1,3 @@
-import typing
 import json
 from datetime import datetime
 from .. import app
