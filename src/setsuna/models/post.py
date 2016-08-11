@@ -87,7 +87,7 @@ class Post:
                                 'password': self.password,
                                 'lang': self.lang
                                 })
-        self.id = result.inserted_id
+        self.id = str(result.inserted_id)
         return self.id
 
 
@@ -111,7 +111,7 @@ class Post:
         re = db.posts.find_one({'_id': objectid.ObjectId(uid)})
         if 'link' in re:
             raise TypeError(repr(re) + ' is not nomal contributon.')
-        self.id = re['_id']
+        self.id = str(re['_id'])
         self.content = re['content']
         self.limit = re['time']
         self.password = re['password']

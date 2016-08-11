@@ -127,8 +127,8 @@ def post_content():
                 password=req['password'] if 'password' in Request.get_json(request) else '',
                 lang=req['lang'] if 'lang' in Request.get_json(request) else 'und')
     tmp_post.post_contribution()
-    
-    return Response(json.dumps(tmp_post), 200)
+
+    return Response(json.dumps(vars(tmp_post)), 200)
 
 @app.route('/api/post/<uid>', methods=['POST'])
 def res_post(uid: str):
