@@ -2,6 +2,7 @@ from datetime import datetime
 from .. import conf as db
 from . import post, response_post
 from bson import objectid
+import pymongo
 
 
 class Posts(list):
@@ -19,7 +20,7 @@ class Posts(list):
         asc -- asc / desc
         lang -- Filter language by ISO 639-2.  
         '''
-        now_all = db.posts.find().sort({'Timestamp': 1 if True else -1})
+        now_all = db.posts.find().sort({'Timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
         self.post_collect(now_all)
 
 
@@ -30,7 +31,7 @@ class Posts(list):
         limit -- save number of contributoin
         asc -- asc / desc
         '''
-        now_save = db.posts.find().limit(limit).sort({'timestamp': 1 if True else -1})
+        now_save = db.posts.find().limit(limit).sort({'Timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
         self.post_collect(now_save)
 
 
@@ -40,7 +41,7 @@ class Posts(list):
 
         lang -- narrow language
         '''
-        lang_post = db.posts.find({'lang': lang}).sort({'timestamp': 1 if True else -1})
+        lang_post = db.posts.find({'lang': lang}).sort({'Timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
         self.post_collect(lang_post)
 
 
@@ -52,7 +53,7 @@ class Posts(list):
         lang -- narrow language
         asc -- asc / desc
         '''
-        lang_post = db.posts.find({'lang': lang}).limit(limit).sort({'timestamp': 1 if True else -1})
+        lang_post = db.posts.find({'lang': lang}).limit(limit).sort({'Timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
         self.post_collect(lang_post)
 
     def get_posts_between(self, start: datetime, end:datetime, asc=True):
@@ -66,7 +67,7 @@ class Posts(list):
         between_post = db.posts.find({'timestanp':
                                 {'$gte': start.strptime(_DATE_FORMAT),
                                  '$lte:': start.strptime(_DATE_FORMAT)}
-                                 }).sort({'timestamp': 1 if True else -1})
+                                 }).sort({'Timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
         self.post_collect(between_post)
 
 
@@ -84,7 +85,7 @@ class Posts(list):
                                  {'$gte': start.strptime(_DATE_FORMAT),
                                   '$lte:': end.strptime(_DATE_FORMAT)}
                                   }
-                                 }).sort({'timestamp':  1 if True else -1})
+                                 }).sort({'Timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
         self.post_collect(between_lang_post)
 
 

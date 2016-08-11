@@ -65,9 +65,9 @@ def index():
 @app.route('/api/posts', methods=['GET'])
 def get_posts():
     tmp_posts = posts.Posts()
-    posts.get_now_posts
+    tmp_posts.get_now_posts()
 
-    return Response(json.dumps(tmp_posts), 200)
+    return Response(json.dumps(vars(tmp_posts)), 200)
 
 
 @app.route('/api/posts/limit/<int:limit>', methods=['GET'])
@@ -75,7 +75,7 @@ def get_posts_limit(limit: int):
     tmp_posts = posts.Posts()
     tmp_posts.get_posts_save(limit)
 
-    return Response(json.dumps(tmp_posts), 200)
+    return Response(json.dumps(vars(tmp_posts)), 200)
 
 
 @app.route('/api/posts/start/<datetime_s>/end/<datetime_e>', methods=['GET'])
@@ -83,7 +83,7 @@ def get_posts_ontime(datetime_s: str, datetime_e: str):
     tmp_posts = posts.Posts()
     tmp_posts.get_posts_between(datetime_s, datetime_e)
 
-    return Response(json.dumps(tmp_posts), 200)
+    return Response(json.dumps(vars(tmp_posts)), 200)
 
 
 @app.route('/api/<lang>/posts', methods=['GET'])
@@ -91,7 +91,7 @@ def get_posts_lang(lang: str):
     tmp_posts = posts.Posts()
     tmp_posts.get_lang_posts(lang)
 
-    return Response(json.dumps(tmp_posts), 200)
+    return Response(json.dumps(vars(tmp_posts)), 200)
 
 
 @app.route('/api/<lang>/posts/start/<datetime_s>/end/<datetime_e>', methods=['GET'])
@@ -99,7 +99,7 @@ def get_posts_lang_ontime(lang: str, datetime_s: str, datetime_e: str):
     tmp_posts = posts.Posts()
     tmp_posts.get_lang_posts_between
 
-    return Response(json.dumps(tmp_posts), 200)
+    return Response(json.dumps(vars(tmp_posts)), 200)
 
 
 @app.route('/api/post/<uid>', methods=['GET'])
@@ -107,7 +107,7 @@ def get_post(uid: str):
     tmp_post = post.Post()
     tmp_post.getPost(uid)
 
-    return Response(json.dumps(tmp_post), 200)
+    return Response(json.dumps(vars(tmp_post)), 200)
 
 
 @app.route('/api/', methods=['POST'])
@@ -142,7 +142,7 @@ def res_post(uid: str):
                             lang=req['lang'] if 'lang' in Request.get_json(request) else 'und')
         tmp_post.post_contribution()
 
-        return Response(json.dumps(post), 200)
+        return Response(json.dumps(vars(post)), 200)
 
 
 @app.route('/api/post/<uid>', methods=['DELETE'])
