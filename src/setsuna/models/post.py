@@ -113,7 +113,7 @@ class Post:
             raise TypeError(repr(re) + ' is not nomal contributon.')
         self.id = str(re['_id'])
         self.content = re['content']
-        self.limit = re['time']
+        self.limit = re['limit']
         self.password = re['password']
         self.lang = re['lang']
 

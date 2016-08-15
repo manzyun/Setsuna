@@ -13,12 +13,11 @@ class ResponsePost(post.Post):
     password -- Password for manually delete.
     lang -- Language code by ISO 639-2.  
     '''
-    def __init__(self, uid: str, link: str, content: str, password: str, lang: str):
+    def __init__(self, link: str, content: str, password: str, lang: str):
         '''
         Make response post.  
 
         link -- Link post ID.  
-        uid -- Unique ID.  
         content -- Post content.  
         limit -- Delete time. Record style is Unix time.  
         password -- Password for manually delete.  
@@ -26,7 +25,7 @@ class ResponsePost(post.Post):
         link -- Response to.  
         '''
         self.link = link 
-        post.Post.__init__(uid, content, password, lang)
+        post.Post.__init__(content, password, lang)
 
 
     def post_contribution(self) -> str:

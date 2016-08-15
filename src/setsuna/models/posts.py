@@ -20,7 +20,7 @@ class Posts(list):
         asc -- asc / desc
         lang -- Filter language by ISO 639-2.  
         '''
-        now_all = db.posts.find().sort({'Timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
+        now_all = db.posts.find().sort('timestamp', pymongo.ASCENDING if asc==True else pymongo.DESCENDING)
         self.post_collect(now_all)
 
 
@@ -31,7 +31,7 @@ class Posts(list):
         limit -- save number of contributoin
         asc -- asc / desc
         '''
-        now_save = db.posts.find().limit(limit).sort({'Timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
+        now_save = db.posts.find().limit(limit).sort({'timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
         self.post_collect(now_save)
 
 
@@ -41,7 +41,7 @@ class Posts(list):
 
         lang -- narrow language
         '''
-        lang_post = db.posts.find({'lang': lang}).sort({'Timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
+        lang_post = db.posts.find({'lang': lang}).sort({'timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
         self.post_collect(lang_post)
 
 
@@ -53,7 +53,7 @@ class Posts(list):
         lang -- narrow language
         asc -- asc / desc
         '''
-        lang_post = db.posts.find({'lang': lang}).limit(limit).sort({'Timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
+        lang_post = db.posts.find({'lang': lang}).limit(limit).sort({'timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
         self.post_collect(lang_post)
 
     def get_posts_between(self, start: datetime, end:datetime, asc=True):
@@ -67,7 +67,7 @@ class Posts(list):
         between_post = db.posts.find({'timestanp':
                                 {'$gte': start.strptime(_DATE_FORMAT),
                                  '$lte:': start.strptime(_DATE_FORMAT)}
-                                 }).sort({'Timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
+                                 }).sort({'timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
         self.post_collect(between_post)
 
 
@@ -85,7 +85,7 @@ class Posts(list):
                                  {'$gte': start.strptime(_DATE_FORMAT),
                                   '$lte:': end.strptime(_DATE_FORMAT)}
                                   }
-                                 }).sort({'Timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
+                                 }).sort({'timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
         self.post_collect(between_lang_post)
 
 
@@ -98,6 +98,11 @@ class Posts(list):
         for _ in data:
             if isinstance(_, dict):
                 if 'link' in _: 
-                    self.append(response_post.ResponsePost(_['link'],objectid.ObjectId(_['_id']), _['content'], _['password'], _['lang']))
+                    tmp = response_post.ResponsePost('','', '', '')
+                    tmp.get_post(objectid.ObjectId(_['_id']))
+                    self.append(tmp)
                 else:
-                    self.append(post.Post(objectid.ObjectId(_['_id']), _['content'], _['password'], _['lang']))
+                    tmp = post.Post('', '', '')
+                    tmp.get_post(objectid.ObjectId(_['_id']))
+                    self.append(tmp)
+
