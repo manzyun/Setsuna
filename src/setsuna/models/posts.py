@@ -100,9 +100,8 @@ class Posts(list):
                 if 'link' in _: 
                     tmp = response_post.ResponsePost('','', '', '')
                     tmp.get_post(objectid.ObjectId(_['_id']))
-                    self.append(tmp)
+                    self.append(vars(tmp))
                 else:
                     tmp = post.Post('', '', '')
                     tmp.get_post(objectid.ObjectId(_['_id']))
-                    self.append(tmp)
-
+                    self.append(vars(tmp))

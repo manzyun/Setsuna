@@ -67,7 +67,7 @@ def get_posts():
     tmp_posts = posts.Posts()
     tmp_posts.get_now_posts()
 
-    return Response(json.dumps(vars(tmp_posts)), 200)
+    return Response(json.dumps(tmp_posts), 200)
 
 
 @app.route('/api/posts/limit/<int:limit>', methods=['GET'])
