@@ -19,13 +19,12 @@ class ResponsePost(post.Post):
 
         link -- Link post ID.  
         content -- Post content.  
-        limit -- Delete time. Record style is Unix time.  
         password -- Password for manually delete.  
         lang -- Language code by ISO 639-2.  
         link -- Response to.  
         '''
+        super().__init__(content, password, lang)
         self.link = link 
-        post.Post.__init__(content, password, lang)
 
 
     def post_contribution(self) -> str:
@@ -40,7 +39,8 @@ class ResponsePost(post.Post):
                                 'link': self.link})
 
         # apothanasia linked contribution.
-        linked_post = db.read_from_db(self.link)
+        linked_post = post.Post('', '', '')
+        linked_post.get_post(self.link)
         linked_post.apothanasia()
 
         self.id = str(result.inserted_id)

@@ -49,7 +49,7 @@ def internal_error(error):
 
 
 def know_post(uid):
-    is_post = post_factory(uid)
+    is_post = post_factory.post_factory(uid)
     if is_post is not None:
         return True
     else:
@@ -145,12 +145,12 @@ def res_post(uid: str):
             abort(400)
 
         req = Request.get_json(request)
-        tmp_post = ResponsePost(link=uid, content=req['content'],
+        tmp_post = response_post.ResponsePost(link=uid, content=req['content'],
                             password=req['password'] if 'password' in Request.get_json(request) else '',
                             lang=req['lang'] if 'lang' in Request.get_json(request) else 'und')
         tmp_post.post_contribution()
 
-        return Response(json.dumps(vars(post)), 200)
+        return Response(json.dumps(vars(tmp_post)), 200)
 
 
 @app.route('/api/post/<uid>', methods=['DELETE'])
@@ -164,7 +164,7 @@ def delete_post(uid):
         req = Request.get_json(request)
         tmp_post = post_factory(uid)
         if not post.password_checker(req['password']):
-            abort(123)
+            abort(401)
         else:
             tmp_post.delete_post()
             return Response(json.dumps({'message': 'Your post deleted ;)'}), 200)

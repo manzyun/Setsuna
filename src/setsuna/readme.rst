@@ -138,7 +138,7 @@ Response(no comment)
 Response(comment)
 ~~~~~~~~~~~~~~~~~~~~
 
-2. Make JSON::
+1. Make JSON::
 
   {
     "content":your content here,
