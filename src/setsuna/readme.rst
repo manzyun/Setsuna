@@ -32,7 +32,7 @@ api/posts access GET method.
 Get new some contributions
 +++++++++++++++++++++++++++++++
 
-api/posts/save/<integer>
+api/posts/save/<integer> access GET method.
 
 example::
 
@@ -41,10 +41,10 @@ example::
 You get 10 contributions.
 
 
-Get between datatime
-++++++++++++++++++++++++++
+Get between date and time
++++++++++++++++++++++++++++++++++++++
 
-api/posts/start/<datetime_s>/end/<datetime_e>
+api/posts/start/<datetime_s>/end/<datetime_e> access GET method.
 
 datetime format is ISO 8601 default format.
 
@@ -52,16 +52,51 @@ example::
 
   api/posts/start/20150312T000000+0900/end/20150314T000000+0900
 
-You get datetime between 2015/3/12 to 2015/3/14
+You get between 2015/3/12 to 2015/3/14 contributions.
 
 
 Get filtered language contributions
 ++++++++++++++++++++++++++++++++++++++++++
 
+/api/<lang>/posts access GET method.
 
-/api/<lang>/posts
+language code is ISO 639-3
 
-lang is ISO 639-3
+example::
+
+  api/jpn/posts/
+
+You get Japanese language contributions.
+
+
+Get filtered language and some new contributions
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+api/<lang>/posts/<integer> access GET method.
+
+example::
+
+  api/jpn/posts/save/10
+
+You get Japanese language new 10 contributions.  
+
+
+Get between date and time and filtered language
+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+/api/<lang>/posts/start/<datetime_s>/end/<datetime_e>
+
+example::
+
+  /api/jpn/posts/start/20150312T000000+0900/end/20150314T000000+0900
+
+You get between 2015/3/12 to 2015/3/14 and Japanese language contributions.
+
+
+Get one post
+++++++++++++++++
+
+/api/post/<id> access GET method.
 
 
 Contribution
@@ -77,7 +112,7 @@ Contribution
 
 .. note:: If "password" is empty then make random 4 digit password.
 
-2. Contribute this address your JSON on POST method.
+2. Contribute this address or api/post your JSON on POST method.
 3. 'Comming server response::
 
   {

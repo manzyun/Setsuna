@@ -55,7 +55,7 @@ class Post:
     '''
     Base post class.  
 
-    uid -- identity key from DB.  
+    id -- identity key from DB.  
     content -- Post content.  
     limit -- Delete time. Record style is Unix time.  
     password -- Password for manually delete.

@@ -70,7 +70,6 @@ class Posts(list):
                                  }).sort('timestamp', pymongo.ASCENDING if asc==True else pymongo.DESCENDING)
         self.post_collect(between_post)
 
-
     def get_lang_posts_between(self, start: datetime, end: datetime, lang='und', asc=True):
         '''
         Get between times and  contributions and narrow language from DB.

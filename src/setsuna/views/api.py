@@ -76,7 +76,7 @@ def get_posts_limit(limit: int):
     tmp_posts = posts.Posts()
     tmp_posts.get_posts_save(limit)
 
-    return Response(json.dumps((tmp_posts)), 200)
+    return Response(json.dumps(tmp_posts), 200)
 
 
 @app.route('/api/posts/start/<datetime_s>/end/<datetime_e>', methods=['GET'])
@@ -84,7 +84,7 @@ def get_posts_ontime(datetime_s: str, datetime_e: str):
     tmp_posts = posts.Posts()
     tmp_posts.get_posts_between(datetime.strptime(datetime_s, _DATE_FORMAT), datetime.strptime(datetime_e, _DATE_FORMAT))
 
-    return Response(json.dumps(vars(tmp_posts)), 200)
+    return Response(json.dumps(tmp_posts), 200)
 
 
 @app.route('/api/<lang>/posts', methods=['GET'])
@@ -92,7 +92,15 @@ def get_posts_lang(lang: str):
     tmp_posts = posts.Posts()
     tmp_posts.get_lang_posts(lang)
 
-    return Response(json.dumps(vars(tmp_posts)), 200)
+    return Response(json.dumps(tmp_posts), 200)
+
+
+@app.route('/api/<lang>/posts/save/<int:limit>', methods=['GET'])
+def get_posts_lang_limit(lang:str, limit: int):
+    tmp_posts = posts.Posts()
+    tmp_posts.get_lang_posts_save(lang, limit)
+
+    return Response(json.dumps(tmp_posts), 200)
 
 
 @app.route('/api/<lang>/posts/start/<datetime_s>/end/<datetime_e>', methods=['GET'])
@@ -105,8 +113,7 @@ def get_posts_lang_ontime(lang: str, datetime_s: str, datetime_e: str):
 
 @app.route('/api/post/<uid>', methods=['GET'])
 def get_post(uid: str):
-    tmp_post = post.Post()
-    tmp_post.getPost(uid)
+    tmp_post = post_factory.post_factory(uid)
 
     return Response(json.dumps(vars(tmp_post)), 200)
 
