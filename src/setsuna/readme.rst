@@ -22,19 +22,47 @@ How to use
 Get contributions
 ~~~~~~~~~~~~~~~~~~~~
 
+
 Get all contributions
 +++++++++++++++++++++++
 
 api/posts access GET method.
+
 
 Get new some contributions
 +++++++++++++++++++++++++++++++
 
 api/posts/save/<integer>
 
-ex::
+example::
 
   api/posts/save/10
+
+You get 10 contributions.
+
+
+Get between datatime
+++++++++++++++++++++++++++
+
+api/posts/start/<datetime_s>/end/<datetime_e>
+
+datetime format is ISO 8601 default format.
+
+example::
+
+  api/posts/start/20150312T000000+0900/end/20150314T000000+0900
+
+You get datetime between 2015/3/12 to 2015/3/14
+
+
+Get filtered language contributions
+++++++++++++++++++++++++++++++++++++++++++
+
+
+/api/<lang>/posts
+
+lang is ISO 639-3
+
 
 Contribution
 ~~~~~~~~~~~~~~

@@ -41,7 +41,7 @@ class Posts(list):
 
         lang -- narrow language
         '''
-        lang_post = db.posts.find({'lang': lang}).sort({'timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
+        lang_post = db.posts.find({'lang': lang}).sort('timestamp', pymongo.ASCENDING if asc==True else pymongo.DESCENDING)
         self.post_collect(lang_post)
 
 
@@ -53,7 +53,7 @@ class Posts(list):
         lang -- narrow language
         asc -- asc / desc
         '''
-        lang_post = db.posts.find({'lang': lang}).limit(limit).sort({'timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
+        lang_post = db.posts.find({'lang': lang}).limit(limit).sort('timestamp', pymongo.ASCENDING if asc==True else pymongo.DESCENDING)
         self.post_collect(lang_post)
 
     def get_posts_between(self, start: datetime, end:datetime, asc=True):
@@ -65,9 +65,9 @@ class Posts(list):
         asc -- asc / desc
         '''
         between_post = db.posts.find({'timestanp':
-                                {'$gte': start.strptime(_DATE_FORMAT),
-                                 '$lte:': start.strptime(_DATE_FORMAT)}
-                                 }).sort({'timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
+                                {'$gte': start,
+                                 '$lte': end}
+                                 }).sort('timestamp', pymongo.ASCENDING if asc==True else pymongo.DESCENDING)
         self.post_collect(between_post)
 
 
@@ -85,7 +85,7 @@ class Posts(list):
                                  {'$gte': start.strptime(_DATE_FORMAT),
                                   '$lte:': end.strptime(_DATE_FORMAT)}
                                   }
-                                 }).sort({'timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
+                                 }).sort('timestamp', pymongo.ASCENDING if asc==True else pymongo.DESCENDING)
         self.post_collect(between_lang_post)
 
 

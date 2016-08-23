@@ -1,11 +1,12 @@
 import json
+from datetime import datetime
 from .. import app
 from .. models import post_factory, post, response_post, posts
 from flask import abort, Request, request, Response
 
 
 _err_dict = {'errors':[]}
-
+_DATE_FORMAT = '%Y%m%dT%H%M%S%z'
 
 @app.errorhandler(400)
 def bad_request(error):
@@ -81,7 +82,7 @@ def get_posts_limit(limit: int):
 @app.route('/api/posts/start/<datetime_s>/end/<datetime_e>', methods=['GET'])
 def get_posts_ontime(datetime_s: str, datetime_e: str):
     tmp_posts = posts.Posts()
-    tmp_posts.get_posts_between(datetime_s, datetime_e)
+    tmp_posts.get_posts_between(datetime.strptime(datetime_s, _DATE_FORMAT), datetime.strptime(datetime_e, _DATE_FORMAT))
 
     return Response(json.dumps(vars(tmp_posts)), 200)
 
