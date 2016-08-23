@@ -70,12 +70,12 @@ def get_posts():
     return Response(json.dumps(tmp_posts), 200)
 
 
-@app.route('/api/posts/limit/<int:limit>', methods=['GET'])
+@app.route('/api/posts/save/<int:limit>', methods=['GET'])
 def get_posts_limit(limit: int):
     tmp_posts = posts.Posts()
     tmp_posts.get_posts_save(limit)
 
-    return Response(json.dumps(vars(tmp_posts)), 200)
+    return Response(json.dumps((tmp_posts)), 200)
 
 
 @app.route('/api/posts/start/<datetime_s>/end/<datetime_e>', methods=['GET'])

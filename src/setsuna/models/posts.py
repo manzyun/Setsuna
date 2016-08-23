@@ -31,7 +31,7 @@ class Posts(list):
         limit -- save number of contributoin
         asc -- asc / desc
         '''
-        now_save = db.posts.find().limit(limit).sort({'timestamp': pymongo.ASCENDING if asc==True else pymongo.DESCENDING})
+        now_save = db.posts.find().limit(limit).sort('timestamp', pymongo.ASCENDING if asc==True else pymongo.DESCENDING)
         self.post_collect(now_save)
 
 

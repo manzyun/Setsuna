@@ -19,6 +19,23 @@ But, your post is gotten response of 1 hour plus every,
 How to use
 --------------
 
+Get contributions
+~~~~~~~~~~~~~~~~~~~~
+
+Get all contributions
++++++++++++++++++++++++
+
+api/posts access GET method.
+
+Get new some contributions
++++++++++++++++++++++++++++++++
+
+api/posts/save/<integer>
+
+ex::
+
+  api/posts/save/10
+
 Contribution
 ~~~~~~~~~~~~~~
 
