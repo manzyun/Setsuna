@@ -142,7 +142,9 @@ def post_content():
 def res_post(uid: str):
     if know_post(uid):
         if not Request.get_json(request):
-            abort(400)
+            apo_post = post_factory.post_factory(uid)
+            apo_post.apothanasia()
+            return Response(json.dumps(vars(apo_post)), 200)
 
         req = Request.get_json(request)
         tmp_post = response_post.ResponsePost(link=uid, content=req['content'],
@@ -162,8 +164,8 @@ def delete_post(uid):
                 abort(400)
 
         req = Request.get_json(request)
-        tmp_post = post_factory(uid)
-        if not post.password_checker(req['password']):
+        tmp_post = post_factory.post_factory(uid)
+        if not tmp_post.password == req['password']:
             abort(401)
         else:
             tmp_post.delete_post()
