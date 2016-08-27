@@ -11,7 +11,6 @@ def killing():
 
     while True:
         try:
-            time.sleep(1)
             logging.info('-!> Killing.')
 
             # Killing Target Search
